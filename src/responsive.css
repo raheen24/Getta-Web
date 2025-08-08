@@ -1,0 +1,135 @@
+@media (max-width: 1660) {
+}
+@media (max-width: 1440px) {
+  .navigation {
+    width: 230px;
+  }
+  .navigation.open {
+    width: 250px;
+  }
+  .sidebar-open .header__content,
+  .sidebar-open .content_section {
+    width: calc(100% - 250px);
+  }
+  .content_section {
+    position: relative;
+    width: calc(100% - 230px);
+  }
+}
+@media (max-width: 1366px) {
+}
+@media (max-width: 1280px) {
+  .pieChart_section {
+    flex-direction: column;
+  }
+  .navigation.open {
+    width: 220px;
+  }
+  .sidebar-open .header__content,
+  .sidebar-open .content_section {
+    width: calc(100% - 220px);
+  }
+}
+@media (max-width: 1200px) {
+  .navigation.open .menuclose {
+    display: block;
+  }
+  .menubar {
+    display: flex;
+  }
+  .navigation.collapsed {
+    width: 100px;
+  }
+  /* .sidebar-collapsed .header__content,
+  .sidebar-collapsed .content_section {
+    margin-left: 100px;
+  } */
+  .navigation.open {
+    width: 250px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+  }
+  .sidebar-open .header__content,
+  .sidebar-open .content_section {
+    width: 100%;
+  }
+  .nav__links {
+    padding: 12px;
+    padding-right: 0 !important;
+  }
+  .navigation.open .nav__links li .active {
+    width: 100%;
+    height: 50px;
+  }
+}
+@media (max-width: 1140px) {
+}
+@media (max-width: 1024px) {
+  .navigation.collapsed {
+    width: 0px;
+  }
+  .sidebar-collapsed .header__content,
+  .sidebar-collapsed .content_section {
+    width: 100%;
+  }
+  .header__content {
+    height: 80px;
+  }
+  .navigation.open {
+    width: 250px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+  }
+}
+@media (max-width: 991px) {
+}
+@media (max-width: 910px) {
+  .my-drivers-map ul li span {
+    font-size: 22px;
+  }
+}
+@media (max-width: 767px) {
+  .authLogo {
+    height: 85px;
+    width: 125px;
+  }
+  .pieChart_section {
+    flex-direction: row;
+  }
+  .smb-heading .sub-heading {
+    font-size: 22px;
+  }
+  .pieChartRightSect {
+    width: calc(100% - 270px);
+  }
+  .numText {
+    font-size: 30px;
+  }
+}
+@media (max-width: 575px) {
+  .input-group input {
+    height: 50px;
+  }
+  .formBox {
+    margin: 10px;
+  }
+  .pieChart_section {
+    flex-direction: column;
+  }
+  .my-drivers-map ul li span {
+    font-size: 20px;
+  }
+  .smb-heading .sub-heading {
+    font-size: 20px;
+  }
+}
+@media (max-width: 425px) {
+  .input-group input {
+    height: 40px;
+  }
+  .authLogo {
+    height: 68px;
+    width: 100px;
+  }
+  input#exampleFormControlInput1 {
+    height: 20px;
+  }
+}
