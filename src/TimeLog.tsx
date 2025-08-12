@@ -9,8 +9,8 @@ import { FaSearch } from "react-icons/fa";
 import { apiHelper } from "../src/services/index";
 import { toast } from "react-toastify";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
 
-// ✅ Define Type for driver logs
 type DriverLog = {
   name: string;
   image: string;
@@ -19,6 +19,7 @@ type DriverLog = {
 };
 
 const TimeLog = () => {
+  const { t } = useTranslation();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [drivers, setDrivers] = useState<DriverLog[]>([]);
   const [searchTerm, setSearchTerm] = useState<string>("");
@@ -27,7 +28,6 @@ const TimeLog = () => {
   const itemsPerPage = 10;
   const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
 
-  // Pagination logic
   const filteredDrivers = drivers.filter((driver) =>
     driver.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -70,7 +70,7 @@ const TimeLog = () => {
             image: driver.driverImage || "",
             date: isValidDate
               ? moment(lastRideDate).format("YYYY-MM-DD HH:mm")
-              : "No rides completed",
+              : t("timeLog.noRidesCompleted"),
             timeSpent: driver.totalRideTime || "0h 0m",
           };
         });
@@ -78,14 +78,14 @@ const TimeLog = () => {
         setDrivers(formatted);
         setCurrentPage(1);
       } else {
-        toast.error("Unexpected response format from API.");
+        toast.error(t("timeLog.unexpectedResponseFormat"));
         setDrivers([]);
       }
     } catch (error) {
       console.error("Error fetching driver logs:", error);
-      toast.error("Something went wrong while fetching time logs.");
+      toast.error(t("timeLog.fetchError"));
     }
-  }, []);
+  }, [t]);
 
   useEffect(() => {
     fetchDrivers();
@@ -107,16 +107,15 @@ const TimeLog = () => {
       <Aside isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       <div className="content_section">
-        {/* Search & Filter Section */}
         <div className="filters d_flex">
           <div className="searchField">
             <input
               type="text"
-              placeholder="Search"
+              placeholder={t("timeLog.search")}
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
-                setCurrentPage(1); // reset pagination
+                setCurrentPage(1);
               }}
             />
             <FaSearch />
@@ -133,14 +132,13 @@ const TimeLog = () => {
           handleClose={() => setShowFilterModal(false)}
         />
 
-        {/* Table Section */}
         <div className="table-responsive">
           <table className="table table-hover custom-driver-table">
             <thead className="thead">
               <tr>
-                <th className="header-cell text-start">Driver Name</th>
-                <th className="header-cell text-start">Last Ride Date</th>
-                <th className="header-cell text-start">Time Spent</th>
+                <th className="header-cell text-start">{t("timeLog.driverName")}</th>
+                <th className="header-cell text-start">{t("timeLog.lastRideDate")}</th>
+                <th className="header-cell text-start">{t("timeLog.timeSpent")}</th>
               </tr>
             </thead>
             <tbody>
@@ -174,14 +172,12 @@ const TimeLog = () => {
               ) : (
                 <tr>
                   <td colSpan={3} className="text-center py-3">
-                    No drivers found.
+                    {t("timeLog.noDriversFound")}
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
-
-          {/* Pagination */}
           <div className="d-flex justify-content-end mt-3">
             <nav aria-label="Page navigation">
               <ul className="pagination">
@@ -211,7 +207,6 @@ const TimeLog = () => {
           </div>
         </div>
       </div>
-
       <Footer />
     </div>
   );

@@ -8,53 +8,51 @@ import Header from "./components/Header";
 import Aside from "./components/Sidebar";
 import profPic from "./assets/images/profpic.png";
 import { apiHelper } from "../src/services/index";
+import { useTranslation } from "react-i18next";
 
 const Request = () => {
+  const { t } = useTranslation();
   const [drivers, setDrivers] = useState([]);
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const navigate = useNavigate();
 
   const toggleSidebar = () => setSidebarOpen((prev) => !prev);
-
-  // Handle responsive sidebar
   useEffect(() => {
     const handleResize = () => {
       setSidebarOpen(window.innerWidth > 1200);
     };
     window.addEventListener("resize", handleResize);
-    handleResize(); // initial check
+    handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Go to profile page
   const handleSeeProfile = (driver) => {
     navigate("/request-profile", {
       state: {
         ...driver.original,
-        driverData: driver.original.driverId, // send full driver object
+        driverData: driver.original.driverId,
       },
     });
   };
 
-  // Fetch driver requests
   const fetchDrivers = async () => {
     try {
       const { response } = await apiHelper("GET", "vendor/get-driver-requests");
 
       if (response?.data?.status === 1) {
         const mappedDrivers = response.data.data.map((item) => ({
-          name: item.driverId?.fullName || "Driver Not Assigned",
+          name: item.driverId?.fullName || t("request.driverNotAssigned"),
           date: moment(item.createdAt).format("YYYY-MM-DD HH:mm"),
           status: item.status || "N/A",
           original: item,
         }));
         setDrivers(mappedDrivers);
       } else {
-        toast.error(response?.data?.message || "Failed to fetch driver requests.");
+        toast.error(response?.data?.message || t("request.fetchError"));
         setDrivers([]);
       }
     } catch (err) {
-      toast.error("Something went wrong while fetching driver requests.");
+      toast.error(t("request.somethingWentWrong"));
       console.error("Fetch error:", err);
       setDrivers([]);
     }
@@ -65,8 +63,17 @@ const Request = () => {
   }, []);
 
   return (
-    <div className={`bg-mains ${isSidebarOpen ? "sidebar-open" : "sidebar-collapsed"}`}>
-      <Header isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+    <div
+      className={`bg-mains ${
+        isSidebarOpen ? "sidebar-open" : "sidebar-collapsed"
+      }`}
+    >
+      <Header
+        isSidebarOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+        headingText={t("request.driverRequests")}
+        showBackButton={true}
+      />
       <Aside isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
 
       <div className="content_section">
@@ -74,10 +81,22 @@ const Request = () => {
           <table className="table table-hover custom-driver-table">
             <thead>
               <tr>
-                <th><p className="colorofall text-start">Driver Name</p></th>
-                <th><p className="colorofall text-start">Date</p></th>
-                <th><p className="colorofall text-start">Status</p></th>
-                <th><p className="colorofall text-center">Action</p></th>
+                <th>
+                  <p className="colorofall text-start">
+                    {t("request.driverName")}
+                  </p>
+                </th>
+                <th>
+                  <p className="colorofall text-start">{t("request.date")}</p>
+                </th>
+                <th>
+                  <p className="colorofall text-start">{t("request.status")}</p>
+                </th>
+                <th>
+                  <p className="colorofall text-center">
+                    {t("request.action")}
+                  </p>
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -115,7 +134,7 @@ const Request = () => {
                           handleSeeProfile(driver);
                         }}
                       >
-                        View Details
+                        {t("request.viewDetails")}
                       </a>
                     </td>
                   </tr>
@@ -123,7 +142,7 @@ const Request = () => {
               ) : (
                 <tr>
                   <td colSpan={4} className="text-center py-4 text-muted">
-                    No driver requests found.
+                    {t("request.noDriverRequests")}
                   </td>
                 </tr>
               )}

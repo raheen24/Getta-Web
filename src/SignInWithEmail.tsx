@@ -16,7 +16,7 @@ import { useTranslation } from "react-i18next";
 const SignInWithEmail: React.FC = () => {
   const { t } = useTranslation();
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false); // Adding loading state for spinner
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { fcmToken } = useSelector((state: any) => state.user);
@@ -27,14 +27,13 @@ const SignInWithEmail: React.FC = () => {
       return;
     }
 
-    // Check for valid email format
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     if (!emailPattern.test(email)) {
       toast.error(t("validation.invalidEmail"));
       return;
     }
 
-    setLoading(true); // Show loading spinner
+    setLoading(true);
 
     const requestBody = {
       email,
@@ -60,8 +59,6 @@ const SignInWithEmail: React.FC = () => {
           userId: response.data.data.userId,
           email: response.data.data.email,
         };
-
-        // Handle FCM token and store it in redux
         const fcmToken = await requestFirebaseNotificationPermission();
         if (fcmToken) {
           dispatch(setFcmToken(fcmToken));
@@ -71,7 +68,7 @@ const SignInWithEmail: React.FC = () => {
         toast.success(t("auth.otpSent"));
 
         setTimeout(() => {
-          navigate("/verification-screen"); // Navigate to verification screen
+          navigate("/verification-screen");
         }, 1500);
       } else {
         const message =
@@ -84,7 +81,7 @@ const SignInWithEmail: React.FC = () => {
       toast.error(t("messages.somethingWentWrong"));
       console.error("Catch Error:", err);
     } finally {
-      setLoading(false); // Hide loading spinner
+      setLoading(false);
     }
   };
 
@@ -122,7 +119,7 @@ const SignInWithEmail: React.FC = () => {
           color="success"
           className="w-100"
           onClick={handleSigin}
-          disabled={loading} // Disable button while loading
+          disabled={loading}
         />
       </div>
     </div>

@@ -11,6 +11,7 @@ import DropOffIcon from "../assets/images/drop-icon-2.png";
 import { useNavigate, useParams } from "react-router-dom";
 import Aside from "./Sidebar";
 import { apiHelper } from "../services/index";
+import { useTranslation } from "react-i18next";
 
 interface DriverHistory {
   userName: string;
@@ -25,6 +26,7 @@ interface DriverHistory {
 
 const DriverHistory = () => {
   const { driverId } = useParams();
+  const { t } = useTranslation();
   const [driverHistory, setDriverHistory] = useState<DriverHistory[]>([]);
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
@@ -44,8 +46,9 @@ const DriverHistory = () => {
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
+
   const handleRowClick = (rideId: string) => {
-    console.log("Navigating to rideId:", rideId); // Check if rideId is being passed correctly
+    console.log("Navigating to rideId:", rideId);
     if (rideId) {
       navigate(`/rider-tracking/${rideId}`);
     } else {
@@ -90,11 +93,11 @@ const DriverHistory = () => {
             date: history.startTime
               ? new Date(history.startTime).toLocaleString()
               : "N/A",
-            status: history.status || "Pending",
+            status: history.status || t("driverHistory.pending"),
             bookingStatus: history.isCancelled
-              ? "Cancelled"
-              : history.status || "Pending",
-            _id: history._id, // Make sure `_id` or `rideId` exists here
+              ? t("driverHistory.cancelled")
+              : history.status || t("driverHistory.pending"),
+            _id: history._id,
           }));
 
           setDriverHistory(historyData);
@@ -151,7 +154,7 @@ const DriverHistory = () => {
       <Header
         isSidebarOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
-        headingText="History"
+        headingText={t("driverHistory.history")}
         showBackButton={true}
         onBack={() => console.log("Going back...")}
       />
@@ -183,7 +186,7 @@ const DriverHistory = () => {
                 <div className="searchField">
                   <input
                     type="text"
-                    placeholder="Search"
+                    placeholder={t("driverHistory.search")}
                     value={searchTerm}
                     onChange={(e) => {
                       setSearchTerm(e.target.value);
@@ -207,19 +210,19 @@ const DriverHistory = () => {
         </div>
 
         {loading ? (
-          <div className="loading-message">Loading...</div>
+          <div className="loading-message">{t("driverHistory.loading")}</div>
         ) : (
           <div className="table-responsive">
             <table className="table table-hover custom-driver-table">
               <thead>
                 <tr>
-                  <th>User Name</th>
-                  <th>Pickup Location</th>
-                  <th>Drop Off Location</th>
-                  <th>Cost</th>
-                  <th>Date</th>
-                  <th>Status</th>
-                  <th>Booking Status</th>
+                  <th>{t("driverHistory.userName")}</th>
+                  <th>{t("driverHistory.pickupLocation")}</th>
+                  <th>{t("driverHistory.dropOffLocation")}</th>
+                  <th>{t("driverHistory.cost")}</th>
+                  <th>{t("driverHistory.date")}</th>
+                  <th>{t("driverHistory.status")}</th>
+                  <th>{t("driverHistory.bookingStatus")}</th>
                 </tr>
               </thead>
               <tbody>
@@ -227,7 +230,7 @@ const DriverHistory = () => {
                   paginatedHistory.map((history, index) => (
                     <tr
                       key={index}
-                      onClick={() => handleRowClick(history._id)} // Ensure history._id or rideId exists here
+                      onClick={() => handleRowClick(history._id)}
                       style={{ cursor: "pointer" }}
                     >
                       <td>
@@ -259,7 +262,7 @@ const DriverHistory = () => {
                 ) : (
                   <tr>
                     <td colSpan={7} className="text-center py-4 text-muted">
-                      No history available for this driver.
+                      {t("driverHistory.noHistoryFound")}
                     </td>
                   </tr>
                 )}

@@ -6,8 +6,10 @@ import Header from "./Header";
 import Aside from "./Sidebar";
 import { apiHelper } from "../services/index";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 const Payment: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { driverId } = useParams();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -45,12 +47,10 @@ const Payment: React.FC = () => {
       if (response?.data?.status === 1) {
         setPaymentDetails(response.data.data);
       } else {
-        toast.error(
-          response?.data?.message || "Failed to fetch payment details."
-        );
+        toast.error(response?.data?.message || t("payment.fetchError"));
       }
     } catch (err) {
-      toast.error("Something went wrong while fetching payment details.");
+      toast.error(t("payment.somethingWentWrong"));
       console.error("Fetch error:", err);
     }
   };
@@ -74,10 +74,12 @@ const Payment: React.FC = () => {
       ).toLocaleDateString()} to ${new Date(
         payments[0].rideId.endTime
       ).toLocaleDateString()}`
-    : "N/A";
-  const vinNumber = vehicle?.vehicleIdentificationNumber || "N/A";
-  const carType = vehicle?.carType || "N/A";
-  const driverName = payments?.[0]?.driverId?.fullName || "N/A";
+    : t("payment.noDataAvailable");
+  const vinNumber =
+    vehicle?.vehicleIdentificationNumber || t("payment.noDataAvailable");
+  const carType = vehicle?.carType || t("payment.noDataAvailable");
+  const driverName =
+    payments?.[0]?.driverId?.fullName || t("payment.noDataAvailable");
 
   return (
     <div
@@ -90,64 +92,67 @@ const Payment: React.FC = () => {
         toggleSidebar={toggleSidebar}
         showBackButton={true}
         showHeading={true}
-        headingText="Payment"
+        headingText={t("payment.payment")}
       />
       <Aside isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className="content_section">
         <div className="charges-sec">
-          <h5 className="text-center fw-bold colorofall">Payment</h5>
+          <h5 className="text-center fw-bold colorofall">
+            {t("payment.payment")}
+          </h5>
           <ListGroup variant="flush">
             <ListGroup.Item className="border-0">
               <div className="justify-content-between d-flex mb-3">
                 <div className="d-flex align-items-center fw-bold">
-                  Date: {dateRange}
+                  {t("payment.date")}: {dateRange}
                 </div>
                 <div className="d-flex align-items-center fw-bold">
-                  Total Rides: {totalUnpaidRides || "N/A"}
+                  {t("payment.totalRides")}:{" "}
+                  {totalUnpaidRides || t("payment.noDataAvailable")}
                 </div>
               </div>
             </ListGroup.Item>
             <ListGroup.Item className="border-0">
               <div className="justify-content-between d-flex">
                 <div className="d-flex align-items-center fw-bold">
-                  {vinNumber}
+                  {t("payment.vinNo")}: {vinNumber}
                 </div>
                 <div className="d-flex align-items-center fw-bold">
-                  {carType}
+                  {t("payment.carType")}: {carType}
                 </div>
               </div>
             </ListGroup.Item>
             <div className="border-bottom my-3"></div>
-            <ListGroup.Item className="border-0 ">
+            <ListGroup.Item className="border-0">
               <div className="justify-content-between d-flex fw-bold">
-                <strong>Name:</strong> {driverName}
+                <strong>{t("payment.name")}:</strong> {driverName}
               </div>
             </ListGroup.Item>
             <div className="border-bottom my-3"></div>
 
             <ListGroup.Item className="border-0">
               <div className="justify-content-between d-flex fw-bold">
-                <strong>Total Rides Cost</strong> $
-                {totalFare?.toFixed(2) || "N/A"}
+                <strong>{t("payment.totalRidesCost")}</strong> $
+                {totalFare?.toFixed(2) || t("payment.noDataAvailable")}
               </div>
             </ListGroup.Item>
             <ListGroup.Item className="border-0">
               <div className="justify-content-between d-flex fw-bold">
-                <strong>Vendor Charges 20%</strong> $
-                {vendorShare?.toFixed(2) || "N/A"}
+                <strong>{t("payment.vendorCharges")}</strong> $
+                {vendorShare?.toFixed(2) || t("payment.noDataAvailable")}
               </div>
             </ListGroup.Item>
             <ListGroup.Item className="border-0">
               <div className="justify-content-between d-flex fw-bold">
-                <strong>Driver Share</strong> $
-                {driverShare?.toFixed(2) || "N/A"}
+                <strong>{t("payment.driverShare")}</strong> $
+                {driverShare?.toFixed(2) || t("payment.noDataAvailable")}
               </div>
             </ListGroup.Item>
             <div className="border-bottom my-3"></div>
 
             <ListGroup.Item className="border-0">
               <div className="justify-content-between d-flex fw-bold">
-                <strong>Total Cost</strong> $
+                <strong>{t("payment.totalCost")}</strong> $
                 {(totalFare + vendorShare || 0).toFixed(2)}
               </div>
             </ListGroup.Item>
@@ -155,7 +160,7 @@ const Payment: React.FC = () => {
 
           <div className="d-flex justify-content-center">
             <GlobalBtn
-              text="Pay Now"
+              text={t("payment.payNow")}
               color="success"
               className="w-50 mt-5"
               navigateTo="/payment-transfer"

@@ -1,61 +1,3 @@
-// import React from "react";
-// import "bootstrap/dist/css/bootstrap.min.css";
-// import logo from "./assets/images/getta-logo.png";
-// import GlobalBtn from "./components/GlobalBtn";
-// import PhoneInput from "react-phone-input-2";
-// import "react-phone-input-2/lib/style.css";
-
-// const SignInWithPhone: React.FC = () => {
-//   return (
-//     <div className="authBg">
-//       <div className="formBox">
-//         <h5 className="authTitle">Sign In with Phone</h5>
-//         <div className="d-flex justify-content-center">
-//           <img src={logo} alt="GETTA Logo" className="authLogo" />
-//         </div>
-//         <div className="my-5 text-center colorofall">
-//           <h5 className="authTitle">Welcome Back!</h5>
-//           <p>Please Sign-in to your account</p>
-//         </div>
-//         <div className="phone-input-container">
-//           <label className="block text-sm font-medium text-gray-700 mb-1">
-//             Phone Number
-//           </label>
-//           <PhoneInput
-//             country={"us"}
-//             enableSearch={true}
-//             disableSearchIcon={true}
-//             placeholder="+1 123 456 7890"
-//             inputClass="w-full !py-2 !px-4 !border-transparent !bg-transparent"
-//             containerClass="!border-b !border-gray-300 !rounded-none !bg-transparent"
-//             buttonClass="!border-transparent !bg-transparent !rounded-none"
-//             dropdownClass="!border-gray-200 !shadow-lg"
-//             inputStyle={{
-//               border: "none",
-//               boxShadow: "none",
-//               paddingLeft: "48px",
-//               width: "100%",
-//             }}
-//             containerStyle={{
-//               background: "transparent",
-//             }}
-//             specialLabel=""
-//           />
-//         </div>
-//         <GlobalBtn
-//           text="Continue"
-//           color="success"
-//           className="w-100 mt-5"
-//           navigateTo="/verification-screen"
-//           onClick={() => console.log("Submitted!")}
-//         />
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default SignInWithPhone;
-
 import React, { useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import logo from "./assets/images/getta-logo.png";
@@ -81,7 +23,6 @@ const SignInWithPhone: React.FC = () => {
         {
           size: "invisible",
           callback: (response: any) => {
-            // reCAPTCHA solved - will proceed with submit
           },
           "expired-callback": () => {
             alert("Recaptcha expired, try again");

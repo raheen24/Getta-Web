@@ -25,61 +25,15 @@ const BankDetails: React.FC = () => {
   const dispatch = useDispatch();
 
   const { token } = useSelector((state: RootState) => state.user);
-
-  // const handleBankDetailsSubmit = async () => {
-  //   if (!token) {
-  //     toast.error(t("auth.authenticationError"));
-  //     return;
-  //   }
-
-  //   if (!bankName || !accountNumber || !accountHolderName || !routingNumber) {
-  //     toast.error(t("validation.fillAllFields"));
-  //     return;
-  //   }
-
-  //   const formData = new FormData();
-  //   formData.append("bankName", bankName);
-  //   formData.append("accountNumber", accountNumber);
-  //   formData.append("accountHolderName", accountHolderName);
-  //   formData.append("routingNumber", routingNumber);
-
-  //   try {
-  //     const { response, error } = await apiHelper(
-  //       "POST",
-  //       "common/complete-profile-bank",
-  //       { Authorization: `Bearer ${token}` },
-  //       formData
-  //     );
-
-  //     if (response?.data) {
-  //       dispatch(setUser(response.data.data));
-  //       dispatch(setToken(response.data.data.userAuthToken));
-
-  //       toast.success(t("bankDetails.updatedSuccessfully"));
-
-  //       // Show modal
-  //       setShowContinue(true);
-  //     } else {
-  //       toast.error(t("bankDetails.updateFailed"));
-  //     }
-  //   } catch (err) {
-  //     toast.error(t("messages.somethingWentWrong"));
-  //     console.error(err);
-  //   }
-  // };
   const handleBankDetailsSubmit = async () => {
     if (!token) {
       toast.error(t("auth.authenticationError"));
       return;
     }
-
-    // Validate input fields
     if (!bankName || !accountNumber || !accountHolderName || !routingNumber) {
       toast.error(t("validation.fillAllFields"));
       return;
     }
-
-    // Proceed with the API call only after validation
     const formData = new FormData();
     formData.append("bankName", bankName);
     formData.append("accountNumber", accountNumber);
@@ -100,13 +54,11 @@ const BankDetails: React.FC = () => {
 
         toast.success(t("bankDetails.updatedSuccessfully"));
 
-        // Show modal
         setShowContinue(true);
       } else {
         toast.error(t("bankDetails.updateFailed"));
       }
     } catch (err) {
-      // Specific error message for failed API call
       toast.error(t("messages.somethingWentWrong"));
       console.error(err);
     }
@@ -168,8 +120,6 @@ const BankDetails: React.FC = () => {
           className="w-50 mx-auto cta"
           onClick={handleBankDetailsSubmit}
         />
-
-        {/* Modal component for Continue action */}
         <ContinueModal
           show={showContinue}
           handleClose={() => setShowContinue(false)}

@@ -9,6 +9,7 @@ import Aside from "./Sidebar";
 import { apiHelper } from "../../src/services/index";
 import arrowBack from "../assets/images/arrow_back.png";
 import profPic from "../assets/images/profpic.png";
+import { useTranslation } from "react-i18next";
 
 interface Driver {
   _id: string;
@@ -29,14 +30,22 @@ interface MappedDriver {
   carType: string;
   vin: string;
   payment: string;
-  _id: string; // Adding _id here for identifying the driver
+  _id: string;
 }
 
 const ListBlocked: React.FC = () => {
+  const { t } = useTranslation();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const [drivers, setDrivers] = useState<MappedDriver[]>([]);
+  const [driverToUnblock, setDriverToUnblock] = useState<MappedDriver | null>(
+    null
+  );
+  const navigate = useNavigate();
+
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 1200) {
@@ -46,15 +55,9 @@ const ListBlocked: React.FC = () => {
       }
     };
     window.addEventListener("resize", handleResize);
-    handleResize(); // Call on initial render
+    handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  const [drivers, setDrivers] = useState<MappedDriver[]>([]);
-  const [driverToUnblock, setDriverToUnblock] = useState<MappedDriver | null>(
-    null
-  );
-  const navigate = useNavigate();
 
   const fetchDrivers = async () => {
     try {
@@ -77,16 +80,16 @@ const ListBlocked: React.FC = () => {
             carType: driver.carType || "N/A",
             vin: driver.vin || "N/A",
             payment: driver.isPayment ? "Paid" : "Pending",
-            _id: driver._id, // Including _id for identification
+            _id: driver._id,
           })
         );
         setDrivers(mappedDrivers);
       } else {
-        toast.error(response?.data?.message || "Failed to fetch drivers.");
+        toast.error(response?.data?.message || t("listBlocked.fetchError"));
         setDrivers([]);
       }
     } catch (err) {
-      toast.error("Something went wrong while fetching drivers.");
+      toast.error(t("listBlocked.somethingWentWrong"));
       console.error("Fetch error:", err);
       setDrivers([]);
     }
@@ -117,22 +120,22 @@ const ListBlocked: React.FC = () => {
       );
 
       if (error) {
-        toast.error(error || "Something went wrong.");
+        toast.error(error || t("listBlocked.somethingWentWrong"));
         return;
       }
 
       if (response?.data?.status === 1) {
-        toast.success(response?.data?.message || "Action successful");
+        toast.success(response?.data?.message || t("listBlocked.actionSuccessful"));
 
         setDrivers(
           (prev) => prev.filter((d) => d._id !== driver._id) // Remove the unblocked driver from the list
         );
       } else {
-        toast.error(response?.data?.message || "Action failed");
+        toast.error(response?.data?.message || t("listBlocked.actionFailed"));
       }
     } catch (err) {
       console.error("Unblock error:", err);
-      toast.error("Something went wrong.");
+      toast.error(t("listBlocked.somethingWentWrong"));
     }
   };
 
@@ -145,7 +148,7 @@ const ListBlocked: React.FC = () => {
       <Header
         isSidebarOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
-        headingText="Blocked Drivers"
+        headingText={t("listBlocked.blockedDrivers")}
         showBackButton={true}
       />
       <Aside isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
@@ -154,13 +157,13 @@ const ListBlocked: React.FC = () => {
           <table className="table table-hover custom-driver-table">
             <thead>
               <tr>
-                <th>Driver Name</th>
-                <th>Car Type</th>
-                <th>VIN No</th>
-                <th>Payment</th>
-                <th>Review</th>
-                <th>Total Rides</th>
-                <th>Status</th>
+                <th>{t("listBlocked.driverName")}</th>
+                <th>{t("listBlocked.carType")}</th>
+                <th>{t("listBlocked.vinNo")}</th>
+                <th>{t("listBlocked.payment")}</th>
+                <th>{t("listBlocked.review")}</th>
+                <th>{t("listBlocked.totalRides")}</th>
+                <th>{t("listBlocked.status")}</th>
               </tr>
             </thead>
             <tbody>
@@ -212,7 +215,7 @@ const ListBlocked: React.FC = () => {
                       className="text-decoration-none colorofall td_date text-start"
                       role="button"
                     >
-                      Unblock
+                      {t("listBlocked.unblock")}
                     </a>
                   </td>
                 </tr>
@@ -220,7 +223,7 @@ const ListBlocked: React.FC = () => {
               {drivers.length === 0 && (
                 <tr>
                   <td colSpan={7} className="text-center py-4 text-muted">
-                    No blocked drivers found.
+                    {t("listBlocked.noBlockedDriversFound")}
                   </td>
                 </tr>
               )}

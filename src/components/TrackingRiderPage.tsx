@@ -12,20 +12,20 @@ import timeIcon from "../assets/images/time-icon.png";
 import mapImage from "../assets/images/map-2.png";
 import { Container, Row, Col, Card, ListGroup, Image } from "react-bootstrap";
 import profileUser from "../assets/images/profile-drive-2.png";
+import { useTranslation } from "react-i18next";
 
 const TrackingRiderPage: React.FC = () => {
   const { rideId } = useParams();
+  const { t } = useTranslation();
   const [rideData, setRideData] = useState<any>(null);
   const [isSidebarOpen, setSidebarOpen] = useState(true);
 
   const navigate = useNavigate();
 
-  // Function to toggle sidebar
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
 
-  // Fetch ride data when rideId changes
   useEffect(() => {
     const fetchRideData = async () => {
       if (!rideId) return;
@@ -38,15 +38,15 @@ const TrackingRiderPage: React.FC = () => {
         if (response?.data?.status === 1) {
           setRideData(response.data.data);
         } else {
-          console.error("Failed to fetch ride data");
+          console.error(t("trackingRider.failedFetch"));
         }
       } catch (err) {
-        console.error("Error fetching ride data", err);
+        console.error(t("trackingRider.errorFetchingData"), err);
       }
     };
 
     fetchRideData();
-  }, [rideId]); // Dependency array to run when rideId changes
+  }, [rideId]);
 
   const {
     userId: user,
@@ -60,12 +60,11 @@ const TrackingRiderPage: React.FC = () => {
     rideType,
     driverReviews,
     vehicle,
-  } = rideData || {}; // Optional chaining in case rideData is null initially
+  } = rideData || {};
 
   const userCharges = user?.charges || {};
   const driverCharges = driver?.charges || {};
 
-  // Calculate ride duration in minutes
   const durationMinutes = rideData
     ? Math.floor(
         (new Date(endTime).getTime() - new Date(startTime).getTime()) / 60000
@@ -74,7 +73,6 @@ const TrackingRiderPage: React.FC = () => {
 
   const totalTimeSpent = durationMinutes;
 
-  // Calculate Ride Charges
   const perMileCharge = userCharges.perMile || 0;
   const perMinuteCharge = userCharges.perMinute || 0;
   const serviceCharge = userCharges.service || 0;
@@ -91,7 +89,7 @@ const TrackingRiderPage: React.FC = () => {
       <Header
         isSidebarOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
-        headingText="Tracking Rider"
+        headingText={t("trackingRider.trackingRider")}
         showBackButton={true}
         showHeading={true}
       />
@@ -103,7 +101,7 @@ const TrackingRiderPage: React.FC = () => {
               <Card.Body>
                 <div className="d_flex tracking-drive mb-3">
                   <Card.Title className="driver-title">
-                    Driver Information
+                    {t("trackingRider.driverInformation")}
                   </Card.Title>
                   <Image
                     src={driver?.image || profPic}
@@ -117,45 +115,49 @@ const TrackingRiderPage: React.FC = () => {
                 <ListGroup variant="flush" className="info-list">
                   <ListGroup.Item className="border-0">
                     <div className="d-flex justify-content-between">
-                      <strong>Name:</strong> {driver?.fullName}
+                      <strong>{t("trackingRider.name")}:</strong>{" "}
+                      {driver?.fullName}
                     </div>
                   </ListGroup.Item>
                   <ListGroup.Item className="border-0">
                     <div className="d-flex justify-content-between">
-                      <strong>Phone:</strong> {driver?.phoneNumber}
+                      <strong>{t("trackingRider.phone")}:</strong>{" "}
+                      {driver?.phoneNumber}
                     </div>
                   </ListGroup.Item>
                   <ListGroup.Item className="border-0">
                     <div className="d-flex justify-content-between">
-                      <strong>Driving License No:</strong>{" "}
+                      <strong>{t("trackingRider.licenseNo")}:</strong>{" "}
                       {driver?.drivingLicense}
                     </div>
                   </ListGroup.Item>
                   <ListGroup.Item className="border-0">
                     <div className="d-flex justify-content-between">
-                      <strong>Car Type:</strong> {vehicle?.carType || "N/A"}
+                      <strong>{t("trackingRider.carType")}:</strong>{" "}
+                      {vehicle?.carType || "N/A"}
                     </div>
                   </ListGroup.Item>
                   <ListGroup.Item className="border-0">
                     <div className="d-flex justify-content-between">
-                      <strong>VIN No:</strong>{" "}
+                      <strong>{t("trackingRider.vinNo")}:</strong>{" "}
                       {vehicle?.vehicleIdentificationNumber || "N/A"}
                     </div>
                   </ListGroup.Item>
                   <ListGroup.Item className="border-0">
                     <div className="d-flex justify-content-between">
-                      <strong>Year:</strong> {vehicle?.year || "N/A"}
+                      <strong>{t("trackingRider.year")}:</strong>{" "}
+                      {vehicle?.year || "N/A"}
                     </div>
                   </ListGroup.Item>
                   <ListGroup.Item className="border-0">
                     <div className="d-flex justify-content-between">
-                      <strong>Transmission:</strong>{" "}
+                      <strong>{t("trackingRider.transmission")}:</strong>{" "}
                       {vehicle?.transmission || "N/A"}
                     </div>
                   </ListGroup.Item>
                   <ListGroup.Item className="border-0">
                     <div className="d-flex justify-content-between">
-                      <strong>Seating Capacity:</strong>{" "}
+                      <strong>{t("trackingRider.seatingCapacity")}:</strong>{" "}
                       {vehicle?.seatingCapacity || "N/A"}
                     </div>
                   </ListGroup.Item>
@@ -168,7 +170,7 @@ const TrackingRiderPage: React.FC = () => {
                       driverReviews.map((review: any, index: number) => (
                         <div key={index} className="d-flex align-items-center">
                           <Image
-                            src={profileUser} // Assuming profileUser image is for user or driver
+                            src={profileUser}
                             roundedCircle
                             width={30}
                             height={30}
@@ -177,20 +179,24 @@ const TrackingRiderPage: React.FC = () => {
                           <div>
                             <small>
                               <strong>
-                                {review?.userId?.fullName || "Anonymous"}
+                                {review?.userId?.fullName ||
+                                  t("trackingRider.anonymous")}
                               </strong>
                             </small>
                             <br />
                             <small>
-                              {review?.comment || "No comment available"}
+                              {review?.comment || t("trackingRider.noComment")}
                             </small>
                             <br />
-                            <small>Rating: {review?.rating || "N/A"}</small>
+                            <small>
+                              {t("trackingRider.rating")}:{" "}
+                              {review?.rating || "N/A"}
+                            </small>
                           </div>
                         </div>
                       ))
                     ) : (
-                      <div>No reviews yet</div> // Fallback message if there are no reviews
+                      <div>{t("trackingRider.noReviews")}</div>
                     )}
                   </Card.Body>
                 </Card>
@@ -210,7 +216,7 @@ const TrackingRiderPage: React.FC = () => {
                 <div className="d-flex justify-content-between align-items-center mb-3">
                   <div className="tracking-drive d_flex mb-3">
                     <Card.Title className="user-title">
-                      User Information
+                      {t("trackingRider.userInformation")}
                     </Card.Title>
                     <Image
                       src={user?.image || profPic}
@@ -224,12 +230,14 @@ const TrackingRiderPage: React.FC = () => {
                 <ListGroup variant="flush" className="info-list">
                   <ListGroup.Item className="border-0">
                     <div className="d-flex justify-content-between">
-                      <strong>Name:</strong> {user?.fullName}
+                      <strong>{t("trackingRider.name")}:</strong>{" "}
+                      {user?.fullName}
                     </div>
                   </ListGroup.Item>
                   <ListGroup.Item className="border-0">
                     <div className="d-flex justify-content-between">
-                      <strong>Phone:</strong> {user?.phoneNumber}
+                      <strong>{t("trackingRider.phone")}:</strong>{" "}
+                      {user?.phoneNumber}
                     </div>
                   </ListGroup.Item>
                 </ListGroup>
@@ -239,14 +247,18 @@ const TrackingRiderPage: React.FC = () => {
             <Card>
               <Card.Body>
                 <div className="booking-info mb-2">
-                  <p className="fw-bold">Booking Information</p>
+                  <p className="fw-bold">
+                    {t("trackingRider.bookingInformation")}
+                  </p>
                   <div className="date-time">
                     <Image src={dateIcon} width={15} className="me-2" />
-                    Date: {new Date(startTime).toLocaleDateString()}
+                    {t("trackingRider.date")}:{" "}
+                    {new Date(startTime).toLocaleDateString()}
                   </div>
                   <div className="date-time">
                     <Image src={timeIcon} width={18} className="me-2" />
-                    Time: {new Date(startTime).toLocaleTimeString()}
+                    {t("trackingRider.time")}:{" "}
+                    {new Date(startTime).toLocaleTimeString()}
                   </div>
                 </div>
                 <Row>
@@ -255,7 +267,7 @@ const TrackingRiderPage: React.FC = () => {
                       <div className="d-flex">
                         <Image src={pickupIcon} className="location-icon" />
                         <div>
-                          <strong>Pickup Location</strong>
+                          <strong>{t("trackingRider.pickupLocation")}</strong>
                           <br />
                           {pickUpLocation?.address}
                         </div>
@@ -265,7 +277,7 @@ const TrackingRiderPage: React.FC = () => {
                       <div className="d-flex">
                         <Image src={dropIcon} className="location-icon" />
                         <div>
-                          <strong>Drop Off Location</strong>
+                          <strong>{t("trackingRider.dropOffLocation")}</strong>
                           <br />
                           {dropOffLocation?.address}
                         </div>
@@ -275,15 +287,23 @@ const TrackingRiderPage: React.FC = () => {
                 </Row>
                 <div className="ride-details">
                   <div className="ride-meta">
-                    <span className="fw-bold">Ride Type:</span>{" "}
+                    <span className="fw-bold">
+                      {t("trackingRider.rideType")}:
+                    </span>{" "}
                     <span>{rideType}</span>
                   </div>
                   <div className="ride-meta">
-                    <span className="fw-bold">Total Time Spent:</span>{" "}
-                    <span>{totalTimeSpent} minutes</span>
+                    <span className="fw-bold">
+                      {t("trackingRider.totalTimeSpent")}:
+                    </span>{" "}
+                    <span>
+                      {totalTimeSpent} {t("trackingRider.minutes")}
+                    </span>
                   </div>
                   <div className="ride-meta">
-                    <span className="fw-bold">Total Ride Charges:</span>{" "}
+                    <span className="fw-bold">
+                      {t("trackingRider.totalRideCharges")}:
+                    </span>{" "}
                     <span>${totalCharge.toFixed(2)}</span>
                   </div>
                 </div>

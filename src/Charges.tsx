@@ -24,7 +24,7 @@ const Charges = () => {
       }
     };
     window.addEventListener("resize", handleResize);
-    handleResize(); // Call on initial render
+    handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
   const dispatch = useDispatch();

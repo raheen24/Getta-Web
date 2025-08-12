@@ -79,19 +79,15 @@ const OTPVerification: React.FC = () => {
         setLoading(false);
         return;
       }
-
-      // Store token in Redux and update user
       dispatch(setToken(token));
       dispatch(setUser(user));
       dispatch(setLogin({ user, token }));
 
       toast.success(t("auth.otpVerificationSuccessful"));
-
-      // Navigate based on profile completion
       if (isProfileCompleted) {
-        navigate("/home"); // Profile completed, navigate to home
+        navigate("/home"); 
       } else {
-        navigate("/create-profile"); // Profile not completed, navigate to create profile
+        navigate("/create-profile");
       }
     } catch (err) {
       toast.error(t("messages.somethingWentWrong"));
@@ -101,7 +97,6 @@ const OTPVerification: React.FC = () => {
     }
   };
 
-  // Handle OTP resend request
   const handleResendOtp = async () => {
     if (!userId) {
       toast.error(t("auth.userIdMissing"));

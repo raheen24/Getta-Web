@@ -38,22 +38,17 @@ const SignIn: React.FC = () => {
 
   const handleSignIn = async () => {
     try {
-      // Step 1: Firebase Google Sign-In
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      const token = await user.getIdToken(); // Firebase ID Token
-
-      // Step 2: Create API payload
+      const token = await user.getIdToken();
       const requestBody = {
         email: user.email,
         authProvider: "google",
-        userDeviceToken: "1234567890", // Replace with real device token
-        userDeviceType: "ios", // Replace with actual device type
+        userDeviceToken: "1234567890", 
+        userDeviceType: "ios",
         userSocialToken: token,
         role: "user",
       };
-
-      // Step 3: Call backend API
       const { response, error } = await apiHelper(
         "POST",
         "/auth/social-sign-in",
@@ -62,10 +57,9 @@ const SignIn: React.FC = () => {
       );
 
       if (response) {
-        console.log("✅ API success:", response.data);
+        console.log("API success:", response.data);
 
-        // Store token and email in localStorage
-        localStorage.setItem("userToken", token); // Firebase ID token
+        localStorage.setItem("userToken", token);
         localStorage.setItem("userEmail", user.email ?? "");
         localStorage.setItem("isLoggedIn", "true");
 
@@ -74,10 +68,7 @@ const SignIn: React.FC = () => {
         }else{
           navigate('/create-profile')
         }
-
         
-
-        // navigate("/verification-screen");
       } else {
         console.error("API error:", error?.response?.data || error);
       }

@@ -11,8 +11,10 @@ import { useSelector } from "react-redux";
 import { RootState } from "./redux";
 import { toast } from "react-toastify";
 import { apiHelper } from "./services";
+import { useTranslation } from "react-i18next";
 
 const ProfilePage: React.FC = () => {
+  const { t } = useTranslation();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const token = useSelector((state: RootState) => state.user.token);
   const [userData, setUserData] = useState<any>(null);
@@ -26,11 +28,7 @@ const ProfilePage: React.FC = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 1200) {
-        setSidebarOpen(false);
-      } else {
-        setSidebarOpen(true);
-      }
+      setSidebarOpen(window.innerWidth > 1200);
     };
     window.addEventListener("resize", handleResize);
     handleResize();
@@ -49,13 +47,13 @@ const ProfilePage: React.FC = () => {
       );
 
       if (response) {
-        console.log("Profile data:", response.data.data); // Log the response to ensure the image URL is correct
+        console.log("Profile data:", response.data.data);
         setUserData(response.data.data);
       } else {
-        toast.error(error || "Failed to fetch profile.");
+        toast.error(error || t("profilePage.fetchError"));
       }
     } catch (err) {
-      toast.error("Error fetching profile.");
+      toast.error(t("profilePage.fetchError"));
       console.error(err);
     }
   };
@@ -85,19 +83,13 @@ const ProfilePage: React.FC = () => {
 
   const getFullImageUrl = (path?: string) => {
     if (!path) {
-      return proImg; // Default profile image if the path is not available
+      return proImg;
     }
 
-    // Check if the path is a full URL or relative
     if (path.startsWith("http") || path.startsWith("https")) {
-      return path; // If it's already a full URL
+      return path;
     }
-
-    // Handle relative paths from the API
-    return `https://getta-api-new.deployment-uat.com/${path.replace(
-      /\\/g,
-      "/"
-    )}`;
+    return `https://client1.appsstaging.com:3017/${path.replace(/\\/g, "/")}`;
   };
 
   return (
@@ -120,15 +112,6 @@ const ProfilePage: React.FC = () => {
                   roundedCircle
                   className="profile-image"
                 />
-                {/* <label className="upload-label">
-                  <Image src={edit} width="24" alt="Upload" />
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="d-none"
-                    onChange={handleProfileImageChange}
-                  />
-                </label> */}
               </div>
               <a href="/edit-profile" className="edit-profile-btn">
                 <Image src={uploadbg} width="18" alt="Edit" />
@@ -140,27 +123,36 @@ const ProfilePage: React.FC = () => {
                 <Col xs={12} lg={6} className="pe-lg-4 business-info-col">
                   <ul className="profile-info-list">
                     <li>
-                      <span className="label">Business Name</span>
+                      <span className="label">
+                        {t("profilePage.businessName")}
+                      </span>
                       <span className="value">
-                        {userData?.businessName || "N/A"}
+                        {userData?.businessName || t("profilePage.nA")}
                       </span>
                     </li>
                     <li>
-                      <span className="label">Phone Number</span>
+                      <span className="label">
+                        {t("profilePage.phoneNumber")}
+                      </span>
                       <span className="value">
-                        {userData?.phoneNumber || "N/A"}
+                        {userData?.phoneNumber || t("profilePage.nA")}
                       </span>
                     </li>
                     <li>
-                      <span className="label">Business Licenses</span>
+                      <span className="label">
+                        {t("profilePage.businessLicenses")}
+                      </span>
                       <span className="value">
-                        {userData?.businessLicense || "N/A"}
+                        {userData?.businessLicense || t("profilePage.nA")}
                       </span>
                     </li>
                     <li>
-                      <span className="label">Tax Identification Number</span>
+                      <span className="label">
+                        {t("profilePage.taxIdentificationNumber")}
+                      </span>
                       <span className="value">
-                        {userData?.taxIdentificationNumber || "N/A"}
+                        {userData?.taxIdentificationNumber ||
+                          t("profilePage.nA")}
                       </span>
                     </li>
                   </ul>
@@ -168,7 +160,9 @@ const ProfilePage: React.FC = () => {
 
                 <Col xs={12} lg={6} className="business-documents-col">
                   <Form.Group className="inputField mb-3">
-                    <Form.Label>Uploaded Document File</Form.Label>
+                    <Form.Label>
+                      {t("profilePage.uploadedDocumentFile")}
+                    </Form.Label>
                     <div className="mediaUpload upload-box">
                       <label htmlFor="document-upload" className="upload-icon">
                         <Image
@@ -187,7 +181,6 @@ const ProfilePage: React.FC = () => {
                     </div>
 
                     <div className="preview-wrapper">
-                      {/* Display uploaded document images from API */}
                       {userData?.taxIdentificationNumberFiles?.map(
                         (fileUrl: string, index: number) => (
                           <div key={`api-${index}`} className="file-preview">
@@ -201,22 +194,9 @@ const ProfilePage: React.FC = () => {
                                 borderRadius: "10px",
                               }}
                             />
-                            {/* <button
-                              type="button"
-                              className="remove-btn"
-                              onClick={() => {
-                                toast.info(
-                                  "To remove this file, please contact admin or edit profile."
-                                );
-                              }}
-                            >
-                              ✕
-                            </button> */}
                           </div>
                         )
                       )}
-
-                      {/* Display local document previews */}
                       {filePreviews.map((previewUrl, index) => (
                         <div key={`local-${index}`} className="file-preview">
                           <img
@@ -234,7 +214,7 @@ const ProfilePage: React.FC = () => {
                             className="remove-btn"
                             onClick={() => handleRemoveFile(index)}
                           >
-                            ✕
+                            {t("profilePage.remove")}
                           </button>
                         </div>
                       ))}

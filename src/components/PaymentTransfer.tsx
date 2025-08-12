@@ -2,11 +2,11 @@ import { useState, useEffect } from "react";
 import { Button, Image } from "react-bootstrap";
 import Header from "./Header";
 import profPic from "../assets/images/profpic.png";
-import arrowBack from "../assets/images/arrow_back.png";
 import { useNavigate } from "react-router-dom";
 import Aside from "./Sidebar";
 import { apiHelper } from "../services/index";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 interface Driver {
   img: string;
@@ -17,8 +17,13 @@ interface Driver {
 }
 
 const PaymentTransfer = () => {
+  const { t } = useTranslation();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
-  const [balance, setBalance] = useState<number>(0); // State to hold balance
+  const [balance, setBalance] = useState<number>(0);
+  const [completed, setCompleted] = useState<Driver[]>([]);
+  const [pending, setPending] = useState<Driver[]>([]);
+  const [activeTab, setActiveTab] = useState("completed");
+
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
@@ -32,45 +37,9 @@ const PaymentTransfer = () => {
       }
     };
     window.addEventListener("resize", handleResize);
-    handleResize(); // Call on initial render
+    handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
-
-  const [activeTab, setActiveTab] = useState("completed");
-
-  const completed = [
-    {
-      img: profPic,
-      name: "Ivan Smith",
-      from: "Sept 14,2022",
-      to: "Sept 30, 2022",
-      amount: "$1254.00",
-    },
-    {
-      img: profPic,
-      name: "Ivan Smith",
-      from: "Sept 14,2022",
-      to: "Sept 30, 2022",
-      amount: "$1254.00",
-    },
-    {
-      img: profPic,
-      name: "Ivan Smith",
-      from: "Sept 14,2022",
-      to: "Sept 30, 2022",
-      amount: "$1254.00",
-    },
-  ];
-
-  const pending = [
-    {
-      img: profPic,
-      name: "Ivan Smith",
-      from: "Oct 01,2022",
-      to: "Oct 15, 2022",
-      amount: "$654.00",
-    },
-  ];
 
   const navigate = useNavigate();
 
@@ -79,20 +48,50 @@ const PaymentTransfer = () => {
       const { response } = await apiHelper("GET", `vendor/get-balance`);
 
       if (response?.data?.status === 1) {
-        setBalance(response.data.data.balance); // Set balance from response
+        setBalance(response.data.data.balance);
       } else {
-        toast.error(
-          response?.data?.message || "Failed to fetch payment details."
-        );
+        toast.error(response?.data?.message || t("paymentTransfer.fetchError"));
       }
     } catch (err) {
-      toast.error("Something went wrong while fetching payment details.");
+      toast.error(t("paymentTransfer.somethingWentWrong"));
+      console.error("Fetch error:", err);
+    }
+  };
+
+  const fetchPayments = async (status: string) => {
+    try {
+      const { response } = await apiHelper(
+        "GET",
+        `vendor/get-payment-history?status=${status}`
+      );
+
+      if (response?.data?.status === 1) {
+        const payments = response.data.data.payments.map((payment: any) => ({
+          img: profPic,
+          name: payment.driverId.email,
+          from: new Date(payment.rideId.createdAt).toLocaleDateString(),
+          to: new Date(payment.driverPaidDate).toLocaleDateString(),
+          amount: `$${payment.amount.toFixed(2)}`,
+        }));
+
+        if (status === "completed") {
+          setCompleted(payments);
+        } else {
+          setPending(payments);
+        }
+      } else {
+        toast.error(response?.data?.message || t("paymentTransfer.fetchError"));
+      }
+    } catch (err) {
+      toast.error(t("paymentTransfer.somethingWentWrong"));
       console.error("Fetch error:", err);
     }
   };
 
   useEffect(() => {
-    fetchBalance(); // Fetch balance when the component is mounted
+    fetchBalance();
+    fetchPayments("completed");
+    fetchPayments("pending");
   }, []);
 
   const handlePaymentTransfer = () => {
@@ -103,9 +102,9 @@ const PaymentTransfer = () => {
     list.map((driver: Driver, idx: number) => (
       <div
         key={idx}
-        className="d-flex justify-content-between align-items-start p-3 border-bottom bg-white"
+        className="d-flex justify-content-between align-items-center p-3 border-bottom bg-white"
       >
-        <div className="d-flex align-items-center" style={{ width: "20%" }}>
+        <div className="d-flex align-items-center" style={{ width: "30%" }}>
           <Image
             src={driver.img}
             alt=""
@@ -117,25 +116,29 @@ const PaymentTransfer = () => {
           <p className="colorofall td_date mb-0 fw-semibold">{driver.name}</p>
         </div>
 
-        <div className="d-flex align-items-start" style={{ width: "30%" }}>
+        <div className="d-flex align-items-center" style={{ width: "30%" }}>
           <div className="d-flex flex-column align-items-start td_date">
-            <span className="colorofall small income-name">From</span>
-            <span className="colorofall mb-0 income-name fs-7 fw-semibold text-start">
-              Sep 14, 2022
+            <span className="colorofall small income-name">
+              {t("paymentTransfer.from")}
+            </span>
+            <span className="colorofall mb-0 income-name fs-7  text-start">
+              {driver.from}
             </span>
           </div>
         </div>
 
-        <div className="d-flex align-items-start" style={{ width: "30%" }}>
+        <div className="d-flex align-items-center" style={{ width: "30%" }}>
           <div className="d-flex flex-column align-items-start td_date">
-            <span className="colorofall small income-name">To</span>
-            <span className="colorofall mb-0 income-name fs-7 fw-semibold text-start">
-              Sep 30, 2022
+            <span className="colorofall small income-name">
+              {t("paymentTransfer.to")}
+            </span>
+            <span className="colorofall mb-0 income-name fs-7  text-start">
+              {driver.to}
             </span>
           </div>
         </div>
 
-        <div className="text-end" style={{ width: "15%" }}>
+        <div className="text-center " style={{ width: "10%" }}>
           <p className="colorofall td_date mb-0 fs-6 fw-semibold">
             {driver.amount}
           </p>
@@ -154,7 +157,7 @@ const PaymentTransfer = () => {
         toggleSidebar={toggleSidebar}
         showBackButton={true}
         showHeading={true}
-        headingText="Payment Transfer"
+        headingText={t("paymentTransfer.payment")}
       />
       <Aside isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className="content_section">
@@ -162,13 +165,15 @@ const PaymentTransfer = () => {
           <h2 className="fw-bold" style={{ color: "#70927f" }}>
             {balance ? `$${balance.toFixed(2)}` : "$0.00"}
           </h2>
-          <p className="text-muted mb-3">Available Balance</p>
+          <p className="text-muted mb-3">
+            {t("paymentTransfer.availableBalance")}
+          </p>
           <Button
             variant="outline-success"
             onClick={handlePaymentTransfer}
             style={{ minWidth: "200px" }}
           >
-            Transfer
+            {t("paymentTransfer.transfer")}
           </Button>
         </div>
 
@@ -180,9 +185,12 @@ const PaymentTransfer = () => {
                 : "text-muted"
             }`}
             style={{ cursor: "pointer" }}
-            onClick={() => setActiveTab("completed")}
+            onClick={() => {
+              setActiveTab("completed");
+              fetchPayments("completed");
+            }}
           >
-            Completed
+            {t("paymentTransfer.completed")}
           </div>
           <div
             className={`px-3 pb-2 fw-bold ms-4 ${
@@ -191,9 +199,12 @@ const PaymentTransfer = () => {
                 : "text-muted"
             }`}
             style={{ cursor: "pointer" }}
-            onClick={() => setActiveTab("pending")}
+            onClick={() => {
+              setActiveTab("pending");
+              fetchPayments("pending");
+            }}
           >
-            Pending
+            {t("paymentTransfer.pending")}
           </div>
         </div>
 

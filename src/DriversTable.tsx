@@ -64,24 +64,26 @@ const DriversTable: React.FC = () => {
             name: driver.fullName || "N/A",
             car: item.vehicle?.carType || "N/A",
             vin: item.vehicle?.vehicleIdentificationNumber || "N/A",
-            payment: driver.isPayment ? "Paid" : "Pending",
+            payment: driver.isPayment
+              ? t("drivers.paid")
+              : t("drivers.pending"),
             rating: driver.averageRating ?? "N/A",
             rides: driver.totalRides || 0,
             status: driver.isBlocked
-              ? "Blocked"
+              ? t("drivers.blocked")
               : driver.isRide
-              ? "Online"
-              : "Offline",
+              ? t("drivers.online")
+              : t("drivers.offline"),
             image: driver.image || null,
           };
         });
         setDrivers(mappedDrivers);
       } else {
-        toast.error(response?.data?.message || "Failed to fetch drivers.");
+        toast.error(response?.data?.message || t("drivers.failedFetch"));
         setDrivers([]);
       }
     } catch (err) {
-      toast.error("Something went wrong while fetching drivers.");
+      toast.error(t("drivers.somethingWentWrong"));
       console.error("Fetch error:", err);
       setDrivers([]);
     }
@@ -108,14 +110,11 @@ const DriversTable: React.FC = () => {
   ) => {
     const target = e.target as HTMLElement;
 
-    // Check if the clicked target is the Track Rider button
     if (target.closest(".track-btn")) {
-      // Navigate to the tracking details page
       navigate(`/tracking-details/${driver._id}`);
       return;
     }
 
-    // Otherwise, navigate to the driver details page
     if (target.closest(".block-link") || target.closest(".payment-cell"))
       return;
     navigate(`/drivers-details/${driver._id}`);
@@ -148,27 +147,30 @@ const DriversTable: React.FC = () => {
         { driverId: driverToBlock._id }
       );
       if (error) {
-        toast.error(error || "Something went wrong.");
+        toast.error(error || t("drivers.somethingWentWrong"));
         return;
       }
       if (response?.data?.status === 1) {
-        toast.success(response?.data?.message || "Action successful");
+        toast.success(response?.data?.message || t("drivers.actionSuccessful"));
         setDrivers((prev) =>
           prev.map((d) =>
             d._id === driverToBlock._id
               ? {
                   ...d,
-                  status: d.status === "Blocked" ? "Offline" : "Blocked",
+                  status:
+                    d.status === t("drivers.blocked")
+                      ? "Offline"
+                      : t("drivers.blocked"),
                 }
               : d
           )
         );
       } else {
-        toast.error(response?.data?.message || "Action failed");
+        toast.error(response?.data?.message || t("drivers.actionFailed"));
       }
     } catch (err) {
       console.error("Block/Unblock error:", err);
-      toast.error("Something went wrong.");
+      toast.error(t("drivers.somethingWentWrong"));
     }
     setShowBlockModal(false);
   };
@@ -196,7 +198,7 @@ const DriversTable: React.FC = () => {
           <div className="searchField">
             <input
               type="text"
-              placeholder="Search"
+              placeholder={t("drivers.search")}
               value={searchTerm}
               onChange={(e) => {
                 setSearchTerm(e.target.value);
@@ -220,14 +222,14 @@ const DriversTable: React.FC = () => {
           <table className="table table-hover custom-driver-table">
             <thead>
               <tr>
-                <th>Driver Name</th>
-                <th>Car Type</th>
-                <th>VIN No</th>
-                <th>Payment</th>
-                <th>Reviews</th>
-                <th>Total Rides</th>
-                <th>Live Tracking</th>
-                <th>Status</th>
+                <th>{t("drivers.driverName")}</th>
+                <th>{t("drivers.carType")}</th>
+                <th>{t("drivers.vinNo")}</th>
+                <th>{t("drivers.payment")}</th>
+                <th>{t("drivers.reviews")}</th>
+                <th>{t("drivers.totalRides")}</th>
+                <th>{t("drivers.liveTracking")}</th>
+                <th>{t("drivers.status")}</th>
                 <th></th>
               </tr>
             </thead>
@@ -270,7 +272,7 @@ const DriversTable: React.FC = () => {
                     <td>{driver.rides}</td>
                     <td>
                       <a className="track-btn text-decoration-none">
-                        Track Rider
+                        {t("drivers.trackRider")}
                       </a>
                     </td>
                     <td className={`status-${driver.status.toLowerCase()}`}>
@@ -281,7 +283,9 @@ const DriversTable: React.FC = () => {
                         className="text-decoration-none colorofall td_date block-link"
                         onClick={(e) => handleBlockClick(e, driver)}
                       >
-                        {driver.status === "Blocked" ? "Unblock" : "Block"}
+                        {driver.status === "Blocked"
+                          ? t("drivers.unblock")
+                          : t("drivers.block")}
                       </a>
                       {showBlockModal && driverToBlock?._id === driver._id && (
                         <BlockModal
@@ -297,7 +301,7 @@ const DriversTable: React.FC = () => {
               ) : (
                 <tr>
                   <td colSpan={9} className="text-center py-4 text-muted">
-                    No drivers found.
+                    {t("drivers.noDriversFound")}
                   </td>
                 </tr>
               )}

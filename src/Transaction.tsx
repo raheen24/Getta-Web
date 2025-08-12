@@ -9,8 +9,10 @@ import { useNavigate } from "react-router-dom";
 import { apiHelper } from "../src/services/index";
 import { toast } from "react-toastify";
 import incomeArrowDown from "./assets/images/income-arrow-down.png";
+import { useTranslation } from "react-i18next";
 
 const Transaction = () => {
+  const { t } = useTranslation();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [transactions, setTransactions] = useState([]);
   const [showModal, setShowModal] = useState(false);
@@ -40,12 +42,11 @@ const Transaction = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Fetch transactions data with pagination support
   const fetchTransactions = async (page = 1) => {
     try {
       const { response } = await apiHelper(
         "GET",
-        `/vendor/get-transactions?page=${page}`
+        `vendor/get-transactions?page=${page}`
       );
 
       if (response?.data?.status === 1) {
@@ -54,11 +55,11 @@ const Transaction = () => {
         setTransactions(transactionData);
         setPagination(paginationData);
       } else {
-        toast.error(response?.data?.message || "Failed to fetch transactions.");
+        toast.error(response?.data?.message || t("transaction.fetchError"));
         setTransactions([]);
       }
     } catch (err) {
-      toast.error("Something went wrong while fetching transactions.");
+      toast.error(t("transaction.somethingWentWrong"));
       console.error("Fetch error:", err);
       setTransactions([]);
     }
@@ -68,7 +69,6 @@ const Transaction = () => {
     fetchTransactions(pagination.page);
   }, [pagination.page]);
 
-  // Filter transactions based on search term
   const filteredTransactions = transactions.filter((transaction) =>
     transaction.driver.fullName.toLowerCase().includes(searchTerm.toLowerCase())
   );
@@ -80,12 +80,6 @@ const Transaction = () => {
     pagination.page * pagination.limit
   );
 
-  // Navigate to transaction details page
-  // const handleRowClick = (transactionId: string) => {
-  //   navigate(`/income-details/${transactionId}`);
-  // };
-
-  // Handle page click for pagination
   const handlePageClick = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setPagination((prev) => ({ ...prev, page }));
@@ -103,13 +97,18 @@ const Transaction = () => {
       <div className="content_section">
         <div className="d-flex w-100 justify-content-between align-items-center mb-3">
           <div>
-            <a className="track-btn text-decoration-none" style={{borderRadius: "32px"}}>New Transaction</a>
+            <a
+              className="track-btn text-decoration-none"
+              style={{ borderRadius: "32px" }}
+            >
+              {t("transaction.newTransaction")}
+            </a>
           </div>
           <div className="filters d_flex">
             <div className="searchField">
               <input
                 type="text"
-                placeholder="Search by Driver Name"
+                placeholder={t("transaction.searchDriverName")}
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
@@ -134,10 +133,10 @@ const Transaction = () => {
           <table className="table table-hover custom-driver-table">
             <thead>
               <tr>
-                <th>Driver Name</th>
-                <th>From</th>
-                <th>To</th>
-                <th>Amount</th>
+                <th>{t("transaction.driverName")}</th>
+                <th>{t("transaction.from")}</th>
+                <th>{t("transaction.to")}</th>
+                <th>{t("transaction.amount")}</th>
               </tr>
             </thead>
             <tbody>
@@ -146,7 +145,6 @@ const Transaction = () => {
                   <tr
                     key={transaction._id}
                     className="driver-row"
-                    // onClick={() => handleRowClick(transaction._id)}
                     style={{ cursor: "pointer" }}
                   >
                     <td>
@@ -190,7 +188,7 @@ const Transaction = () => {
               ) : (
                 <tr>
                   <td colSpan="4" className="text-center text-muted py-4">
-                    No transactions found.
+                    {t("transaction.noTransactionsFound")}
                   </td>
                 </tr>
               )}
@@ -198,24 +196,23 @@ const Transaction = () => {
           </table>
         </div>
 
-        {/* Pagination */}
         <div className="d-flex justify-content-between align-items-center mt-3 px-3">
           <button
             className="btn btn-secondary"
             onClick={() => handlePageClick(pagination.page - 1)}
             disabled={pagination.page === 1}
           >
-            Previous
+            {t("transaction.previous")}
           </button>
           <span className="text-white">
-            Page {pagination.page} of {totalPages}
+            {t("transaction.pageOf", { page: pagination.page, totalPages })}
           </span>
           <button
             className="btn btn-secondary"
             onClick={() => handlePageClick(pagination.page + 1)}
             disabled={pagination.page === totalPages}
           >
-            Next
+            {t("transaction.next")}
           </button>
         </div>
       </div>

@@ -132,7 +132,7 @@ const SettingsPage = () => {
                         type="checkbox"
                         id="authSwitch"
                         checked={twoFactorAuth}
-                        onChange={handleTwoFactorAuthToggle} // Toggle 2FA
+                        onChange={handleTwoFactorAuthToggle}
                       />
                     </div>
                   </button>

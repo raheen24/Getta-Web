@@ -1,4 +1,5 @@
 import "../assets/BlockModal.css";
+import { useTranslation } from "react-i18next";
 
 interface BlockModalProps {
   userName: string;
@@ -13,6 +14,8 @@ const BlockModal: React.FC<BlockModalProps> = ({
   onConfirm,
   onCancel,
 }) => {
+  const { t } = useTranslation();
+
   return (
     <div className="modal-overlay-of-block">
       <div className="modal-content-of-block">
@@ -20,11 +23,17 @@ const BlockModal: React.FC<BlockModalProps> = ({
         <button className="close-btn-of-block" onClick={onCancel}>
           &times;
         </button>
-        <h3>{isBlocked ? "Unblock" : "Block"}</h3>
-        <h3 className="modal-text-of-block">"{userName}"?</h3>
+        <h3 className="modal-heading-of-block">
+          {isBlocked ? t("blockModal.unblock") : t("blockModal.block")}
+        </h3>
+        
+        <h3 className="modal-text-of-block">{userName}</h3> {/* Driver's name */}
         <div className="modal-actions-of-block">
-          <button className="block-btn-of-block" onClick={onConfirm}>
-            {isBlocked ? "Unblock" : "Block"}
+          <button
+            className="block-btn-of-block"
+            onClick={onConfirm}
+          >
+            {isBlocked ? t("blockModal.unblockButton") : t("blockModal.blockButton")}
           </button>
         </div>
       </div>

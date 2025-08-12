@@ -8,6 +8,8 @@ import { Form } from "react-bootstrap";
 import { FaUniversity } from "react-icons/fa";
 import TransferModal from "./PaymentSuccessModal";
 import Aside from "./Sidebar";
+import { useTranslation } from "react-i18next";
+
 interface PaymentTransferAccProps {
   selectedDriver: {
     name: string;
@@ -17,16 +19,19 @@ interface PaymentTransferAccProps {
 const PaymentTransferAcc: React.FC<PaymentTransferAccProps> = ({
   selectedDriver,
 }) => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
 
   const goBack = () => {
     navigate(-1);
   };
+
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 1200) {
@@ -36,33 +41,35 @@ const PaymentTransferAcc: React.FC<PaymentTransferAccProps> = ({
       }
     };
     window.addEventListener("resize", handleResize);
-    handleResize(); 
+    handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   return (
     <div
       className={`bg-mains ${
         isSidebarOpen ? "sidebar-open" : "sidebar-collapsed"
       }`}
     >
-      <Header isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+      <Header
+        isSidebarOpen={isSidebarOpen}
+        toggleSidebar={toggleSidebar}
+        showBackButton={true}
+        headingText={t("paymentTransferAcc.paymentTransfer")}
+        showHeading={true}
+      />
       <Aside isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <div className="content_section">
-        <div className="back-btn-sec mb-3 d-flex align-items-center">
-          <button onClick={goBack} className="back-btn">
-            <img src={arrowBack} alt="Back" />
-          </button>
-          <h5 className="back-title">Tracking Rider</h5>
-        </div>
-
         <div className="charges-sec bg-all">
           <div>
             <h5 className="fw-bold mb-3">
-              {selectedDriver?.name || "Driver Name"}
+              {selectedDriver?.name || t("paymentTransferAcc.driverName")}
             </h5>
-
             <Form.Group controlId="formAmount" className="mb-4">
-              <Form.Control type="text" placeholder="Enter Amount" />
+              <Form.Control
+                type="text"
+                placeholder={t("paymentTransferAcc.enterAmount")}
+              />
             </Form.Group>
 
             <div className="payment-method-box mb-4">
@@ -71,14 +78,14 @@ const PaymentTransferAcc: React.FC<PaymentTransferAccProps> = ({
               </div>
               <div className="flex-grow-1">
                 <span className="fw-semibold text-dark">
-                  Bank Name: ******5487
+                  {t("paymentTransferAcc.bankName")}
                 </span>
               </div>
               <input type="radio" name="bank" checked readOnly />
             </div>
 
             <GlobalBtn
-              text="Pay Now"
+              text={t("paymentTransferAcc.payNow")}
               color="success"
               className="w-100 mt-5"
               onClick={() => setShowModal(true)}

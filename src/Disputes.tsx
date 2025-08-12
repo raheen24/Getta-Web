@@ -12,12 +12,15 @@ import { useNavigate } from "react-router-dom";
 import { apiHelper } from "../src/services/index";
 import { toast } from "react-toastify";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
 
 const Disputes = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [disputes, setDisputes] = useState([]);
   const [showModal, setShowModal] = useState(false);
-  const [activeTab, setActiveTab] = useState(""); // empty = show all
+  const [activeTab, setActiveTab] = useState("");
+    const { t } = useTranslation();
+  
   const navigate = useNavigate();
 
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
@@ -31,7 +34,6 @@ const Disputes = () => {
     }
   }, []);
 
-  // API fetch if needed
   const fetchDisputes = async () => {
     try {
       const { response } = await apiHelper("GET", "vendor/get-disputes");
@@ -48,13 +50,13 @@ const Disputes = () => {
           index,
         }));
         setDisputes(mapped);
-        localStorage.setItem("disputesData", JSON.stringify(mapped)); // Save
+        localStorage.setItem("disputesData", JSON.stringify(mapped));
       } else {
-        toast.error(response?.data?.message || "Failed to fetch disputes.");
+        toast.error(response?.data?.message || t("disputes.failedFetch"));
       }
     } catch (err) {
       console.error("API error:", err);
-      toast.error("Something went wrong while fetching disputes.");
+      toast.error(t("disputes.somethingWentWrong"));
     }
   };
 
@@ -66,7 +68,7 @@ const Disputes = () => {
     const updated = [...disputes];
     updated[index].status = newStatus;
     setDisputes(updated);
-    localStorage.setItem("disputesData", JSON.stringify(updated)); // Sync to storage
+    localStorage.setItem("disputesData", JSON.stringify(updated));
   };
 
   const filteredDisputes =
@@ -100,12 +102,12 @@ const Disputes = () => {
           >
             <Nav.Item>
               <Nav.Link eventKey="Resolved" className="track-btn">
-                Resolved
+                {t("disputes.resolved")}
               </Nav.Link>
             </Nav.Item>
             <Nav.Item>
               <Nav.Link eventKey="Unresolved" className="track-btn">
-                Unresolved
+                {t("disputes.unresolved")}
               </Nav.Link>
             </Nav.Item>
           </Nav>
@@ -115,11 +117,11 @@ const Disputes = () => {
           <table className="table table-hover custom-driver-table">
             <thead>
               <tr>
-                <th>Driver Info</th>
-                <th>Description</th>
-                <th>Time</th>
-                <th>Date</th>
-                <th>Status</th>
+                <th>{t("disputes.driverInfo")}</th>
+                <th>{t("disputes.description")}</th>
+                <th>{t("disputes.time")}</th>
+                <th>{t("disputes.date")}</th>
+                <th>{t("disputes.status")}</th>
               </tr>
             </thead>
             <tbody>
@@ -139,7 +141,7 @@ const Disputes = () => {
                     />
                     <div className="d-flex flex-column align-items-start td_date">
                       <p className="colorofall td_date mb-0 fw-bold">
-                        Driver Name
+                        {t("disputes.driverName")}
                       </p>
                       <p className="colorofall td_date mb-0">{d.fullName}</p>
                     </div>
@@ -147,7 +149,7 @@ const Disputes = () => {
 
                   <td>
                     <span className="text-start small colorofall income-name">
-                      {d.reason}
+                      {d.reason || t("disputes.noReason")}
                     </span>
                   </td>
                   <td>

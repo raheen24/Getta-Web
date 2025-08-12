@@ -9,12 +9,13 @@ import Aside from "./Sidebar";
 import { useParams, useNavigate } from "react-router-dom";
 import { apiHelper } from "../services";
 import moment from "moment";
+import { useTranslation } from "react-i18next";
 
 const DisputesDetail = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [dispute, setDispute] = useState<any>(null); // Initializing dispute as null
-
+  const { t } = useTranslation();
   const { id } = useParams();
   const navigate = useNavigate();
 
@@ -29,7 +30,6 @@ const DisputesDetail = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // Fetch dispute details based on the ID
   const fetchDispute = async () => {
     try {
       const { response } = await apiHelper("GET", `vendor/get-dispute/${id}`);
@@ -37,9 +37,11 @@ const DisputesDetail = () => {
         const data = response.data.data;
         const formatted = {
           ...data,
-          status: data?.isResolved ? "Resolved" : "Unresolved",
+          status: data?.isResolved
+            ? t("disputes.resolved")
+            : t("disputes.unresolved"),
         };
-        setDispute(formatted); // Set the dispute data after formatting
+        setDispute(formatted);
       }
     } catch (error) {
       console.error("Failed to fetch dispute by ID", error);
@@ -47,11 +49,10 @@ const DisputesDetail = () => {
   };
 
   useEffect(() => {
-    if (id) fetchDispute(); // Fetch dispute if the ID exists in URL params
+    if (id) fetchDispute();
   }, [id]);
 
   if (!dispute) {
-    // Show placeholder content or a fallback while fetching dispute data
     return (
       <div className="bg-mains">
         <Header
@@ -62,7 +63,7 @@ const DisputesDetail = () => {
         />
         <Aside isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
         <section className="content_section">
-          <div>Loading dispute details...</div> {/* Fallback or empty state */}
+          <div>{t("disputes.loading")}</div> 
         </section>
         <Footer />
       </div>
@@ -74,15 +75,13 @@ const DisputesDetail = () => {
     rideId = {},
     reason,
     createdAt,
-    status = "Unresolved",
+    status = t("disputes.unresolved"),
   } = dispute;
-
-  // Handle status change (resolved/unresolved)
   const handleStatusChange = (newStatus: string) => {
     const updated = {
       ...dispute,
       status: newStatus,
-      isResolved: newStatus === "Resolved",
+      isResolved: newStatus === t("disputes.resolved"),
     };
     setDispute(updated);
 
@@ -92,7 +91,7 @@ const DisputesDetail = () => {
     );
     localStorage.setItem("disputesData", JSON.stringify(updatedList));
 
-    navigate("/disputes-tabs"); // Navigate to disputes tabs
+    navigate("/disputes-tabs");
   };
 
   return (
@@ -117,13 +116,13 @@ const DisputesDetail = () => {
           <table className="table table-hover custom-driver-table">
             <thead>
               <tr>
-                <th>User Name</th>
-                <th>Pickup Location</th>
-                <th>Drop Off Location</th>
-                <th>Cost</th>
-                <th>Date</th>
-                <th>Status</th>
-                <th>Booking Status</th>
+                <th>{t("disputes.userName")}</th>
+                <th>{t("disputes.pickupLocation")}</th>
+                <th>{t("disputes.dropOffLocation")}</th>
+                <th>{t("disputes.cost")}</th>
+                <th>{t("disputes.date")}</th>
+                <th>{t("disputes.status")}</th>
+                <th>{t("disputes.bookingStatus")}</th>
               </tr>
             </thead>
             <tbody>
@@ -153,7 +152,7 @@ const DisputesDetail = () => {
                     />
                     <div className="d-flex flex-column align-items-start td_date">
                       <span className="colorofall small income-name fw-semibold">
-                        Pickup Location
+                        {t("disputes.pickupLocation")}
                       </span>
                       <span className="colorofall income-name fs-7 fw-semibold text-start">
                         {rideId?.pickUpLocation?.address || "N/A"}
@@ -172,7 +171,7 @@ const DisputesDetail = () => {
                     />
                     <div className="d-flex flex-column align-items-start td_date">
                       <span className="colorofall small income-name fw-semibold">
-                        Drop Off Location
+                        {t("disputes.dropOffLocation")}
                       </span>
                       <span className="colorofall income-name fs-7 fw-semibold text-start">
                         {rideId?.dropOffLocation?.address || "N/A"}
@@ -183,7 +182,11 @@ const DisputesDetail = () => {
                 <td>${rideId?.fare || 0}</td>
                 <td>{moment(createdAt).format("MMM DD, YYYY")}</td>
                 <td>{status}</td>
-                <td>{rideId?.isCompleted ? "Completed" : "Scheduled"}</td>
+                <td>
+                  {rideId?.isCompleted
+                    ? t("disputes.completed")
+                    : t("disputes.scheduled")}
+                </td>
               </tr>
             </tbody>
           </table>
@@ -191,18 +194,20 @@ const DisputesDetail = () => {
           <div className="table-footer-note mt-4 p-3 rounded">
             <p className="mb-4">{reason}</p>
             <div className="d-flex gap-3">
-              {["Resolved", "Unresolved"].map((statusOpt) => (
-                <span
-                  key={statusOpt}
-                  className={`track-btn-down ${
-                    statusOpt === status ? "active" : ""
-                  }`}
-                  style={{ cursor: "pointer" }}
-                  onClick={() => handleStatusChange(statusOpt)}
-                >
-                  {statusOpt}
-                </span>
-              ))}
+              {[t("disputes.resolved"), t("disputes.unresolved")].map(
+                (statusOpt) => (
+                  <span
+                    key={statusOpt}
+                    className={`track-btn-down ${
+                      statusOpt === status ? "active" : ""
+                    }`}
+                    style={{ cursor: "pointer" }}
+                    onClick={() => handleStatusChange(statusOpt)}
+                  >
+                    {statusOpt}
+                  </span>
+                )
+              )}
             </div>
           </div>
         </div>

@@ -9,7 +9,7 @@ import { setLogout } from "../redux/slice/userSlice";
 
 // Create Axios instance
 const instance = axios.create({
-  baseURL: "https://getta-api-new.deployment-uat.com/api/v1/", 
+  baseURL: "https://client1.appsstaging.com:3017/api/v1/",
   timeout: 20000,
 });
 

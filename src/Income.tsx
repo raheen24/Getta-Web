@@ -8,8 +8,10 @@ import { apiHelper } from "../src/services/index";
 import { toast } from "react-toastify";
 import moment from "moment";
 import React, { useState, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 
 const Income = () => {
+  const { t } = useTranslation();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -23,7 +25,7 @@ const Income = () => {
       }
     };
     window.addEventListener("resize", handleResize);
-    handleResize(); // Call on initial render
+    handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
@@ -58,11 +60,11 @@ const Income = () => {
         setDrivers(mappedDrivers);
         setPagination(pagData);
       } else {
-        toast.error(response?.data?.message || "Failed to fetch income data.");
+        toast.error(response?.data?.message || t("income.fetchError"));
         setDrivers([]);
       }
     } catch (err) {
-      toast.error("Something went wrong while fetching income data.");
+      toast.error(t("income.somethingWentWrong"));
       console.error("Fetch error:", err);
       setDrivers([]);
     }
@@ -94,8 +96,19 @@ const Income = () => {
         <div className="table-responsive">
           <table className="table table-hover custom-driver-table">
             <tbody>
+              {/* <tr>
+                <th>{t("income.driverName")}</th>
+                <th>{t("income.from")}</th>
+                <th>{t("income.to")}</th>
+                <th>{t("income.amount")}</th>
+              </tr> */}
               {drivers.map((driver, index) => (
-                <tr key={index} className="driver-row" onClick={handleRowClick}>
+                <tr
+                  key={index}
+                  className="driver-row"
+                  onClick={handleRowClick}
+                  style={{ cursor: "pointer" }}
+                >
                   <td>
                     <div className="d-flex track-btn2">
                       <img
@@ -114,7 +127,7 @@ const Income = () => {
                   <td>
                     <div className="d-flex flex-column align-items-start td_date">
                       <span className="text-muted small income-name">
-                        Status
+                        {t("income.status")}
                       </span>
                       <span className="colorofall mb-0 income-name">
                         {driver.status}
@@ -124,7 +137,9 @@ const Income = () => {
 
                   <td>
                     <div className="d-flex flex-column align-items-start td_date">
-                      <span className="text-muted small income-name">Date</span>
+                      <span className="text-muted small income-name">
+                        {t("income.date")}
+                      </span>
                       <span className="colorofall mb-0 income-name">
                         {driver.createdAt}
                       </span>
@@ -148,7 +163,7 @@ const Income = () => {
               {drivers.length === 0 && (
                 <tr>
                   <td colSpan="4" className="text-center text-muted py-4">
-                    No income data found.
+                    {t("income.noIncomeData")}
                   </td>
                 </tr>
               )}
@@ -163,17 +178,20 @@ const Income = () => {
             onClick={() => handlePageClick(pagination.page - 1)}
             disabled={pagination.page === 1}
           >
-            Previous
+            {t("income.previous")}
           </button>
           <span className="text-white">
-            Page {pagination.page} of {pagination.pages}
+            {t("income.pageOf", {
+              page: pagination.page,
+              totalPages: pagination.pages,
+            })}
           </span>
           <button
             className="btn btn-secondary"
             onClick={() => handlePageClick(pagination.page + 1)}
             disabled={pagination.page === pagination.pages}
           >
-            Next
+            {t("income.next")}
           </button>
         </div>
       </div>

@@ -1,35 +1,47 @@
-import React, { useEffect, useState } from "react";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { useNavigate } from "react-router-dom";
-import { Form } from "react-bootstrap";
+import React, { useState, useEffect } from "react";
+import { Row, Col, Image, Form } from "react-bootstrap";
+import Header from "./components/Header";
+import Aside from "./components/Sidebar";
+import Footer from "./components/Footer";
+import proImg from "./assets/images/profile_img.png";
+import edit from "./assets/images/edit.png";
+import uploadbg from "./assets/images/gallery-icon.png";
+import BusinessUploadIcon from "./assets/images/business-upload-icon.png";
 import { useDispatch, useSelector } from "react-redux";
-import { toast, ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-
-import GlobalBtn from "./components/GlobalBtn";
-import { apiHelper } from "./services";
-import { setUser } from "./redux/slice/userSlice";
 import { RootState } from "./redux";
+import { toast, ToastContainer } from "react-toastify";
+import { apiHelper } from "./services";
+import { useTranslation } from "react-i18next";
+import { useNavigate } from "react-router-dom";
+import GlobalBtn from "./components/GlobalBtn";
+import { setUser } from "./redux/slice/userSlice";
 
 const EditProfile: React.FC = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const token = useSelector((state: RootState) => state.user.token); // Token from Redux store
+  const token = useSelector((state: RootState) => state.user.token);
 
   const [profileImage, setProfileImage] = useState<File | null>(null);
-  const [previewImage, setPreviewImage] = useState<string | null>(null); // For displaying image preview
-  const [selectedFiles, setSelectedFiles] = useState<File[]>([]); // New document files
-  const [existingFiles, setExistingFiles] = useState<string[]>([]); // Existing document files
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
+  const [existingFiles, setExistingFiles] = useState<string[]>([]);
 
   const [businessName, setBusinessName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [businessLicense, setBusinessLicense] = useState("");
   const [taxIdentificationNumber, setTaxIdentificationNumber] = useState("");
 
-  const getFullImageUrl = (path?: string) => {
+  // const getFullImageUrl = (path?: string) => {
+  //   return path
+  //     ? `https://client1.appsstaging.com:3017/${path.replace(/\\/g, "/")}`
+  //     : "/default-profile.png";
+  // };
+
+   const getFullImageUrl = (path?: string) => {
     return path
-      ? `https://getta-api-new.deployment-uat.com/${path.replace(/\\/g, "/")}`
-      : "/default-profile.png"; // Return default if no image path
+      ? `https://client1.appsstaging.com:3017/${path.replace(/\\/g, "/")}`
+      : "/default-profile.png";
   };
 
   useEffect(() => {
@@ -42,7 +54,7 @@ const EditProfile: React.FC = () => {
         const headers = { Authorization: `Bearer ${token}` };
         const { response, error } = await apiHelper(
           "GET",
-          "vendor/get-profile", // Fetch profile data from the API
+          "vendor/get-profile",
           headers
         );
         if (response) {
@@ -51,8 +63,6 @@ const EditProfile: React.FC = () => {
           setPhoneNumber(data.phoneNumber || "");
           setBusinessLicense(data.businessLicense || "");
           setTaxIdentificationNumber(data.taxIdentificationNumber || "");
-
-          // Set profile image if exists
           if (data.image) {
             setPreviewImage(getFullImageUrl(data.image)); // Display the current profile image
           }
@@ -157,7 +167,7 @@ const EditProfile: React.FC = () => {
     <div className="authBg">
       <ToastContainer position="top-center" autoClose={3000} />
       <div className="formBox createProfileForm">
-        <h5 className="authTitle">Edit Profile</h5>
+        <h5 className="authTitle">{t("editProfile.editProfile")}</h5>
 
         <div className="mb-4 text-center">
           <div
@@ -167,12 +177,12 @@ const EditProfile: React.FC = () => {
             <div className="profile-wrapper">
               {previewImage ? (
                 <img
-                  src={previewImage} // Show image preview if available
+                  src={previewImage}
                   alt="Profile Preview"
                   className="profile-image"
                 />
               ) : (
-                <div className="no-image">No Image</div>
+                <div className="no-image">{t("editProfile.noImage")}</div>
               )}
             </div>
             <label htmlFor="upload-profile" className="upload-button">
@@ -180,7 +190,7 @@ const EditProfile: React.FC = () => {
                 type="file"
                 accept="image/*"
                 className="hidden-input"
-                onChange={handleImageChange} // Update profile image
+                onChange={handleImageChange}
                 id="upload-profile"
               />
               <svg
@@ -198,42 +208,44 @@ const EditProfile: React.FC = () => {
               </svg>
             </label>
           </div>
-          <p className="text-muted mt-2">Upload Your Image</p>
+          <p className="text-muted mt-2">{t("editProfile.uploadImage")}</p>
         </div>
 
         <div className="row">
           <div className="col-md-6">
             <Form className="text-start">
               <Form.Group className="inputField mb-3">
-                <Form.Label>Business Name</Form.Label>
+                <Form.Label>{t("editProfile.businessName")}</Form.Label>
                 <Form.Control
                   type="text"
                   value={businessName}
-                  onChange={(e) => setBusinessName(e.target.value)} // Handle input changes
+                  onChange={(e) => setBusinessName(e.target.value)}
                 />
               </Form.Group>
               <Form.Group className="inputField mb-3">
-                <Form.Label>Phone Number</Form.Label>
+                <Form.Label>{t("editProfile.phoneNumber")}</Form.Label>
                 <Form.Control
                   type="tel"
                   value={phoneNumber}
-                  onChange={(e) => setPhoneNumber(e.target.value)} // Handle input changes
+                  onChange={(e) => setPhoneNumber(e.target.value)}
                 />
               </Form.Group>
               <Form.Group className="inputField mb-3">
-                <Form.Label>Business Licenses</Form.Label>
+                <Form.Label>{t("editProfile.businessLicenses")}</Form.Label>
                 <Form.Control
                   type="text"
                   value={businessLicense}
-                  onChange={(e) => setBusinessLicense(e.target.value)} // Handle input changes
+                  onChange={(e) => setBusinessLicense(e.target.value)}
                 />
               </Form.Group>
               <Form.Group className="inputField mb-3">
-                <Form.Label>Tax Identification Number</Form.Label>
+                <Form.Label>
+                  {t("editProfile.taxIdentificationNumber")}
+                </Form.Label>
                 <Form.Control
                   as="textarea"
                   value={taxIdentificationNumber}
-                  onChange={(e) => setTaxIdentificationNumber(e.target.value)} // Handle input changes
+                  onChange={(e) => setTaxIdentificationNumber(e.target.value)}
                 />
               </Form.Group>
             </Form>
@@ -241,7 +253,7 @@ const EditProfile: React.FC = () => {
 
           <div className="col-md-6">
             <Form.Group className="inputField mb-3">
-              <Form.Label>Upload Document File</Form.Label>
+              <Form.Label>{t("editProfile.uploadedDocumentFile")}</Form.Label>
               <div className="mediaUpload upload-box">
                 <label htmlFor="document-upload" className="upload-icon">
                   <svg width="40" height="80" viewBox="0 0 24 24" fill="none">
@@ -256,43 +268,17 @@ const EditProfile: React.FC = () => {
                 <Form.Control
                   type="file"
                   multiple
-                  onChange={handleDocumentChange} // Handle document upload
+                  onChange={handleDocumentChange}
                   className="d-none"
                   id="document-upload"
                 />
               </div>
-
-              {/* Document previews */}
               <div className="preview-wrapper">
-                {/* Existing documents from the API */}
                 {existingFiles.map((fileUrl, index) => (
                   <div key={`existing-${index}`} className="file-preview">
                     <img
-                      src={getFullImageUrl(fileUrl)} // Display existing documents
+                      src={getFullImageUrl(fileUrl)}
                       alt={`Uploaded ${index}`}
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                        borderRadius: "10px",
-                      }}
-                    />
-                    <button
-                      type="button"
-                      className="remove-btn"
-                      onClick={() => handleRemoveExistingFile(index)} // Remove existing file
-                    >
-                      ✕
-                    </button>
-                  </div>
-                ))}
-
-                {/* New files selected by the user */}
-                {selectedFiles.map((file, index) => (
-                  <div key={`local-${index}`} className="file-preview">
-                    <img
-                      src={URL.createObjectURL(file)} // Show preview for new document files
-                      alt={`File ${index}`}
                       style={{
                         width: "100%",
                         height: "100%",
@@ -309,6 +295,27 @@ const EditProfile: React.FC = () => {
                     </button>
                   </div>
                 ))}
+                {selectedFiles.map((file, index) => (
+                  <div key={`local-${index}`} className="file-preview">
+                    <img
+                      src={URL.createObjectURL(file)}
+                      alt={`File ${index}`}
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        borderRadius: "10px",
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="remove-btn"
+                      onClick={() => handleRemoveNewFile(index)}
+                    >
+                      {t("editProfile.remove")}
+                    </button>
+                  </div>
+                ))}
               </div>
             </Form.Group>
           </div>
@@ -316,10 +323,10 @@ const EditProfile: React.FC = () => {
 
         <div className="d-flex justify-content-center">
           <GlobalBtn
-            text="Update Profile"
+            text={t("editProfile.updateProfile")}
             color="success"
             className="w-50 mt-5 cta"
-            onClick={handleUpdateProfile} // Handle form submission
+            onClick={handleUpdateProfile}
           />
         </div>
       </div>

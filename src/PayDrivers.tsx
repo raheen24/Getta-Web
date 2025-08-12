@@ -9,6 +9,7 @@ import { useNavigate } from "react-router-dom";
 import Aside from "./components/Sidebar";
 import { apiHelper } from "../src/services/index";
 import { toast } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 const PayDrives = () => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -17,6 +18,7 @@ const PayDrives = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const toggleSidebar = () => {
@@ -74,20 +76,15 @@ const PayDrives = () => {
   useEffect(() => {
     fetchDrivers();
   }, []);
-
-  // Filter drivers based on search input
   const filteredDrivers = drivers.filter((d) =>
     d.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  // Pagination logic
   const totalPages = Math.ceil(filteredDrivers.length / itemsPerPage);
   const paginatedDrivers = filteredDrivers.slice(
     (currentPage - 1) * itemsPerPage,
     currentPage * itemsPerPage
   );
-
-  // Handle page click
   const handlePageClick = (page: number) => {
     if (page >= 1 && page <= totalPages) {
       setCurrentPage(page);
@@ -106,9 +103,8 @@ const PayDrives = () => {
         <div className="d-flex justify-content-end align-items-center mb-4">
           <div className="d-flex w-100 justify-content-between align-items-center mb-3">
             <div>
-              <p className="mb-0">
-                List of Drivers who have transferred the amount in the last 14
-                days.
+             <p className="mb-0">
+                {t("payDrives.listDrivers")}
               </p>
             </div>
 
@@ -144,24 +140,12 @@ const PayDrives = () => {
           <table className="table table-hover custom-driver-table">
             <thead>
               <tr>
-                <th>
-                  <p className="colorofall">Driver Name</p>
-                </th>
-                <th>
-                  <p className="colorofall">Car Type</p>
-                </th>
-                <th>
-                  <p className="colorofall">VIN No</p>
-                </th>
-                <th>
-                  <p className="colorofall">Reviews</p>
-                </th>
-                <th>
-                  <p className="colorofall">Total Rides</p>
-                </th>
-                <th>
-                  <p className="colorofall">Payment</p>
-                </th>
+                <th>{t("payDrives.driverName")}</th>
+                <th>{t("payDrives.carType")}</th>
+                <th>{t("payDrives.vinNo")}</th>
+                <th>{t("payDrives.reviews")}</th>
+                <th>{t("payDrives.totalRides")}</th>
+                <th>{t("payDrives.payment")}</th>
               </tr>
             </thead>
             <tbody>
@@ -206,8 +190,8 @@ const PayDrives = () => {
                       onClick={
                         () =>
                           driver.payment === "Paid"
-                            ? navigate(`/paid-details/${driver._id}`) // Pass the driver ID to /paid-details
-                            : navigate(`/payment/${driver._id}`) // Pass the driver ID to /payment
+                            ? navigate(`/paid-details/${driver._id}`)
+                            : navigate(`/payment/${driver._id}`)
                       }
                     >
                       <p className="colorofall td_date mb-0">
