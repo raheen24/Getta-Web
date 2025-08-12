@@ -41,7 +41,7 @@ export default defineConfig({
     host: true,
     port: 5173,
     strictPort: true,
-    allowedHosts: 'getta-web.deployment-uat.com',
+    allowedHosts: ['getta-web.deployment-uat.com'],
     proxy: {
       '/api': {
         target: 'https://getta-api-new.deployment-uat.com/api/v1/',
