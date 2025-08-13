@@ -71,7 +71,7 @@ function App() {
         <Route path="/drivers-details/:driverId" element={<DriverHistory />} />
         <Route path="/rider-tracking/:rideId" element={<TrackingRiderPage />} />
         <Route path="/drivers-profile" element={<DriverProfile />} />
-        <Route path="/tracking-details/:id" element={<TrackingDetails />} />
+        <Route path="/tracking-details" element={<TrackingDetails />} />
         <Route path="/payment/:driverId" element={<Payment />} />
         <Route path="/payment-transfer" element={<PaymentTransfer />} />
         <Route

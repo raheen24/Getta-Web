@@ -111,7 +111,7 @@ const DriversTable: React.FC = () => {
     const target = e.target as HTMLElement;
 
     if (target.closest(".track-btn")) {
-      navigate(`/tracking-details/${driver._id}`);
+      navigate(`/tracking-details?driverId=${driver._id}`, { state: { driver } });
       return;
     }
 
