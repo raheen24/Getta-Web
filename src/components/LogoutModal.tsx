@@ -15,7 +15,6 @@ interface LogoutModalProps {
 const LogoutModal: React.FC<LogoutModalProps> = ({ show, handleClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const handleLogoutAndRedirect = async () => {
     try {
       const { response, error } = await apiHelper("POST", "auth/sign-out", {});
