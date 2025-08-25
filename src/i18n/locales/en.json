@@ -24,12 +24,42 @@
     "warning": "Warning",
     "info": "Information",
     "user": "User",
-    "goToHome": "Go to Home"
+    "goToHome": "Go to Home",
+    "notAvailable": "N/A"
   },
+  "home": {
+    "smbRegistered": "SMB has Successfully Registered",
+    "publish": "Publish",
+    "statistics": "Statistics",
+    "last7Days": "Last 7 Days",
+    "last6Days": "Last 6 Days",
+    "last5Days": "Last 5 Days",
+    "last4Days": "Last 4 Days",
+    "last3Days": "Last 3 Days",
+    "last2Days": "Last 2 Days",
+    "last1Day": "Last 1 Day",
+    "onlineDrivers": "Online Drivers",
+    "offlineDrivers": "Offline Drivers",
+    "revenue": "Revenue",
+    "myDrivers": "My Drivers",
+    "seeAll": "See All",
+    "noEmail": "No email",
+    "viewProfile": "View Profile",
+    "totalDrivers": "Total Drivers Listed",
+    "driversOnRides": "Drivers on Rides",
+    "driverName": "Driver Name",
+    "driverEmail": "Driver Email",
+    "driverRating": "Driver Rating",
+    "total": "Total",
+    "change": "Change",
+    "loading": "Loading..."
+  },
+
   "navigation": {
     "home": "Home",
     "profile": "Profile",
     "orders": "Orders",
+    "request": "Request",
     "previous": "Previous",
     "restaurant": "Restaurant",
     "payDrivers": "Pay Drivers",
@@ -42,6 +72,43 @@
     "notifications": "Notifications",
     "blockedDrivers": "Blocked Drivers",
     "language": "Language"
+  },
+  "deleteAccount": {
+    "heading": "Delete Account",
+    "confirmMessage": "Are you sure you want to delete your account?",
+    "yes": "Yes",
+    "no": "No",
+    "success": "Account deleted successfully",
+    "fail": "Failed to delete account",
+    "error": "An unexpected error occurred while deleting your account."
+  },
+  "settings": {
+    "notifications": "Notifications",
+    "notificationSuccess": "Notification preference updated successfully",
+    "notificationFail": "Failed to update notification preference",
+    "notificationError": "An error occurred while updating your notification preference",
+    "twoFactorAuth": "2 Factor Authentication",
+    "twoFASuccess": "2FA has been successfully updated",
+    "twoFAFail": "Failed to update 2FA preference",
+    "twoFAError": "An error occurred while updating your 2FA preference",
+    "language": "Language",
+    "privacyPolicy": "Privacy Policy",
+    "termsConditions": "Terms & Conditions",
+    "deleteAccount": "Delete Account",
+    "blockList": "Block List"
+  },
+  "privacyPolicy": {
+    "title": "Privacy Policy",
+    "loading": "Loading privacy policy...",
+    "fetchError": "Unexpected error occurred while fetching privacy policy.",
+    "noData": "Failed to fetch privacy policy: No data found"
+  },
+  "terms": {
+    "heading": "Terms and Conditions",
+    "loading": "Loading terms and conditions...",
+    "fetchError": "Unexpected error occurred while fetching terms and conditions.",
+    "noData": "Failed to fetch terms and conditions: No data found",
+    "back": "Back"
   },
   "auth": {
     "signIn": "Sign In",
@@ -79,7 +146,9 @@
     "alreadyHaveAccount": "Already have an account?",
     "dontHaveAccount": "Don't have an account?",
     "login": "Login",
-    "register": "Register"
+    "register": "Register",
+    "terms": "Terms & Conditions",
+    "privacy": "Privacy & Policy"
   },
   "profile": {
     "editProfile": "Edit Profile",
@@ -99,7 +168,21 @@
     "city": "City",
     "state": "State",
     "zipCode": "Zip Code",
-    "country": "Country"
+    "country": "Country",
+    "title": "Driver Profile",
+    "loading": "Loading driver data...",
+    "imageAlt": "Profile",
+    "name": "Name",
+    "phone": "Phone",
+    "license": "Driving License",
+    "vin": "VIN Number",
+    "carType": "Car Type",
+    "year": "Year",
+    "transmission": "Transmission",
+    "capacity": "Seating Capacity",
+    "bio": "Bio",
+    "totalRides": "Total Rides",
+    "reviews": "Reviews"
   },
   "bankDetails": {
     "title": "Bank Details",
@@ -121,6 +204,7 @@
     "status": "Status",
     "active": "Active",
     "inactive": "Inactive",
+    "search": "Search",
     "blocked": "Blocked",
     "rating": "Rating",
     "earnings": "Earnings",
@@ -197,12 +281,12 @@
     "bankName": "Bank Name: ******5487",
     "payNow": "Pay Now"
   },
-   "paymentSuccessModal": {
+  "paymentSuccessModal": {
     "paymentTransferred": "Payment Has Been Successfully Transferred",
     "successMessage": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur itaque doloremque, qui ratione architecto, quod cupiditate nihil.",
     "backToHome": "Back To Home"
   },
-   "listBlocked": {
+  "listBlocked": {
     "blockedDrivers": "Blocked Drivers",
     "driverName": "Driver Name",
     "carType": "Car Type",
@@ -224,7 +308,7 @@
     "blockButton": "Block",
     "unblockButton": "Unblock"
   },
-   "request": {
+  "request": {
     "driverRequests": "Driver Requests",
     "driverName": "Driver Name",
     "date": "Date",
@@ -236,7 +320,7 @@
     "fetchError": "Failed to fetch driver requests.",
     "somethingWentWrong": "Something went wrong while fetching driver requests."
   },
-   "profilePage": {
+  "profilePage": {
     "businessName": "Business Name",
     "phoneNumber": "Phone Number",
     "businessLicenses": "Business Licenses",
@@ -245,7 +329,7 @@
     "remove": "Remove",
     "nA": "N/A"
   },
-   "editProfile": {
+  "editProfile": {
     "editProfile": "Edit Profile",
     "uploadImage": "Upload Your Image",
     "businessName": "Business Name",
@@ -395,7 +479,45 @@
     "notificationSettings": "Notification Settings",
     "pushNotifications": "Push Notifications",
     "emailNotifications": "Email Notifications",
-    "smsNotifications": "SMS Notifications"
+    "smsNotifications": "SMS Notifications",
+    "title": "Notifications",
+    "loading": "Loading notifications...",
+    "empty": "No notifications available.",
+    "filter": "Filter",
+    "from": "From",
+    "to": "To",
+    "keywords": "Keywords",
+    "datePlaceholder": "DD/MM/YYYY",
+    "done": "Done"
+  },
+  "trackingDetails": {
+    "trackingDetails": "Tracking Details",
+    "noDriverData": "No driver data available",
+    "driverInformation": "Driver Information",
+    "name": "Name",
+    "phone": "Phone",
+    "carType": "Car Type",
+    "vinNumber": "VIN Number",
+    "year": "Year",
+    "transmission": "Transmission",
+    "seatingCapacity": "Seating Capacity",
+    "reviews": "Reviews",
+    "notAvailable": "Not Available",
+    "map": "Map",
+    "date": "Date",
+    "time": "Time",
+    "pickupLocation": "Pickup Location",
+    "dropOffLocation": "Drop-off Location",
+    "rideType": "Ride Type",
+    "preBooking": "Pre-Booking",
+    "totalTimeSpent": "Total Time Spent",
+    "rideCharges": "Ride Charges",
+    "waitingForDriverLocation": "Waiting for driver location...",
+    "driverCurrentLocation": "Driver's Current Location",
+    "latitude": "Latitude",
+    "longitude": "Longitude",
+    "loading": "Loading...",
+    "keyword": "Keyword"
   },
   "language": {
     "language": "Language",
@@ -406,6 +528,13 @@
     "french": "French",
     "selectLanguage": "Select Language",
     "languageChanged": "Language changed to"
+  },
+  "logout": {
+    "logout": "Logout",
+    "confirmLogout": "Are you sure you want to logout?",
+    "loggedOutSuccessfully": "You have logged out successfully.",
+    "logoutFailed": "Logout failed. Please try again.",
+    "logoutError": "An error occurred while logging out."
   },
   "modals": {
     "confirm": "Confirm",

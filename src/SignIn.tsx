@@ -19,7 +19,6 @@ const SignIn: React.FC = () => {
     navigate("/sign-in-with-email");
   };
 
-
   const handleClickPhone = () => {
     navigate("/sign-in-with-phone");
   };
@@ -28,10 +27,12 @@ const SignIn: React.FC = () => {
     try {
       const result = await signInWithPopup(auth, appleProvider);
       const user = result.user;
-      toast.success(`${t('messages.welcome')} ${user.displayName || t('common.user')}!`);
+      toast.success(
+        `${t("messages.welcome")} ${user.displayName || t("common.user")}!`
+      );
       console.log("Apple Sign-In Success", user);
     } catch (error) {
-      toast.error(t('auth.appleSignInFailed'));
+      toast.error(t("auth.appleSignInFailed"));
       console.error("Apple Sign-In Error", error);
     }
   };
@@ -44,7 +45,7 @@ const SignIn: React.FC = () => {
       const requestBody = {
         email: user.email,
         authProvider: "google",
-        userDeviceToken: "1234567890", 
+        userDeviceToken: "1234567890",
         userDeviceType: "ios",
         userSocialToken: token,
         role: "user",
@@ -63,12 +64,11 @@ const SignIn: React.FC = () => {
         localStorage.setItem("userEmail", user.email ?? "");
         localStorage.setItem("isLoggedIn", "true");
 
-        if(response?.data?.data?.isCompleted){
-          navigate('/home')
-        }else{
-          navigate('/create-profile')
+        if (response?.data?.data?.isCompleted) {
+          navigate("/home");
+        } else {
+          navigate("/create-profile");
         }
-        
       } else {
         console.error("API error:", error?.response?.data || error);
       }
@@ -83,11 +83,11 @@ const SignIn: React.FC = () => {
         <img src={logo} alt="GETTA Logo" className="authLogo" />
 
         <button className="btn cta mb-3" onClick={handleClick}>
-          <MdEmail /> {t('auth.signInWithEmail')}
+          <MdEmail /> {t("auth.signInWithEmail")}
         </button>
 
         <button className="btn cta mb-3" onClick={handleClickPhone}>
-          <img src={phoneIcon} alt="phone icon" /> {t('auth.signInWithPhone')}
+          <img src={phoneIcon} alt="phone icon" /> {t("auth.signInWithPhone")}
         </button>
 
         <button
@@ -95,17 +95,25 @@ const SignIn: React.FC = () => {
           style={{ background: "#F84D3B" }}
           onClick={handleSignIn}
         >
-          <FaGoogle /> {t('auth.signInWithGoogle')}
+          <FaGoogle /> {t("auth.signInWithGoogle")}
         </button>
 
-        <button className="btn cta" style={{ background: "#000" }} onClick={handleAppleSignIn}>
-          <FaApple /> {t('auth.signInWithApple')}
+        <button
+          className="btn cta"
+          style={{ background: "#000" }}
+          onClick={handleAppleSignIn}
+        >
+          <FaApple /> {t("auth.signInWithApple")}
         </button>
 
         <p className="mt-3 text-muted mt-5">
-          {t('auth.bySigningIn')} <br />
+          {t("auth.bySigningIn")} <br />
           <Link to="/terms" className="fw-bold" style={{ color: "#002250" }}>
-            {t('auth.termsAndPrivacy')}
+            {t("auth.terms")}
+          </Link>
+          &nbsp;|&nbsp; {/* This adds a separator between Terms and Privacy */}
+          <Link to="/privacy" className="fw-bold" style={{ color: "#002250" }}>
+            {t("auth.privacy")}
           </Link>
         </p>
       </div>

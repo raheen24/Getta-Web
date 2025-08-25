@@ -44,7 +44,7 @@ const Privacy: React.FC = () => {
     >
       <div className="d-flex flex-column">
         <button
-          className="btn btn-outline-dark mb-3 rounded-circle bg-white"
+          className="btn mb-3 rounded-circle bg-white"
           onClick={() => navigate(-1)}
           style={{
             width: "fit-content",
@@ -68,7 +68,7 @@ const Privacy: React.FC = () => {
           ) : (
             <div
               className="terms-content"
-              dangerouslySetInnerHTML={{ __html: termsContent || "" }}
+              dangerouslySetInnerHTML={{ __html: privacyContent || "" }}
             />
           )}
         </div>

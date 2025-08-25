@@ -62,6 +62,7 @@ const DriversTable: React.FC = () => {
           return {
             _id: driver._id,
             name: driver.fullName || "N/A",
+            phoneNumber: driver.phoneNumber||"N/A",
             car: item.vehicle?.carType || "N/A",
             vin: item.vehicle?.vehicleIdentificationNumber || "N/A",
             payment: driver.isPayment
@@ -75,8 +76,10 @@ const DriversTable: React.FC = () => {
               ? t("drivers.online")
               : t("drivers.offline"),
             image: driver.image || null,
+            rawData: item, // 👈 send the complete backend response as well
           };
         });
+
         setDrivers(mappedDrivers);
       } else {
         toast.error(response?.data?.message || t("drivers.failedFetch"));
@@ -111,7 +114,9 @@ const DriversTable: React.FC = () => {
     const target = e.target as HTMLElement;
 
     if (target.closest(".track-btn")) {
-      navigate(`/tracking-details?driverId=${driver._id}`, { state: { driver } });
+      navigate(`/tracking-details?driverId=${driver._id}`, {
+        state: { driver: driver.rawData }, // 👈 send rawData to details screen
+      });
       return;
     }
 
@@ -233,6 +238,7 @@ const DriversTable: React.FC = () => {
                 <th></th>
               </tr>
             </thead>
+
             <tbody>
               {paginatedDrivers.length > 0 ? (
                 paginatedDrivers.map((driver) => (
@@ -287,14 +293,6 @@ const DriversTable: React.FC = () => {
                           ? t("drivers.unblock")
                           : t("drivers.block")}
                       </a>
-                      {showBlockModal && driverToBlock?._id === driver._id && (
-                        <BlockModal
-                          userName={driverToBlock.name}
-                          isBlocked={driverToBlock.status === "Blocked"}
-                          onConfirm={handleConfirmBlock}
-                          onCancel={handleCancelBlock}
-                        />
-                      )}
                     </td>
                   </tr>
                 ))
@@ -307,7 +305,14 @@ const DriversTable: React.FC = () => {
               )}
             </tbody>
           </table>
-
+          {showBlockModal && driverToBlock && (
+            <BlockModal
+              userName={driverToBlock.name}
+              isBlocked={driverToBlock.status === "Blocked"}
+              onConfirm={handleConfirmBlock}
+              onCancel={handleCancelBlock}
+            />
+          )}
           {/* Pagination */}
           <div className="d-flex justify-content-end mt-3">
             <nav aria-label="Page navigation">

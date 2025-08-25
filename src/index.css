@@ -73,6 +73,14 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 }
+.btn:hover {
+  color: #0c262a;
+}
+.disabled-link {
+  pointer-events: none;
+  color: rgb(173, 173, 173) !important;
+  cursor: not-allowed;
+}
 .bg-mains {
   /* background: rgba(255, 255, 255, 0.5); */
   background: rgb(234 243 255);
@@ -2678,10 +2686,13 @@ button {
 }
 .modal-content-of-block h3 {
   color: #6e727d;
+  text-align: center;
   font-size: 40px;
   font-weight: 600;
 }
-
+.backBtn{
+  padding: 0;
+}
 .block-btn-of-block {
   background: #6e727d;
   font-size: 18px;

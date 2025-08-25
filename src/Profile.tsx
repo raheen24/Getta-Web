@@ -21,6 +21,7 @@ const ProfilePage: React.FC = () => {
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [filePreviews, setFilePreviews] = useState<string[]>([]);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const user = useSelector((state: RootState) => state.user.user);
 
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -181,7 +182,7 @@ const ProfilePage: React.FC = () => {
                     </div>
 
                     <div className="preview-wrapper">
-                      {userData?.taxIdentificationNumberFiles?.map(
+                      {user?.taxIdentificationNumberFiles?.map(
                         (fileUrl: string, index: number) => (
                           <div key={`api-${index}`} className="file-preview">
                             <img

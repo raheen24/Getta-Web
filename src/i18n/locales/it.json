@@ -23,7 +23,25 @@
     "success": "Successo",
     "warning": "Avviso",
     "info": "Informazioni",
-    "user": "Utente"
+    "user": "Utente",
+    "notAvailable": "N/D"
+  },
+  "editProfile": {
+    "editProfile": "Modifica profilo",
+    "uploadImage": "Carica la tua immagine",
+    "businessName": "Nome azienda",
+    "phoneNumber": "Numero di telefono",
+    "businessLicenses": "Licenze aziendali",
+    "taxIdentificationNumber": "Codice fiscale",
+    "uploadedDocumentFile": "File caricato",
+    "remove": "Rimuovere",
+    "updateProfile": "Aggiorna profilo",
+    "fetchError": "Impossibile recuperare i dati del profilo.",
+    "fillAllFields": "Compila tutti i campi obbligatori.",
+    "profileUpdated": "Profilo aggiornato con successo!",
+    "profileUpdateFailed": "Aggiornamento profilo non riuscito",
+    "updateError": "Si è verificato un errore durante l'aggiornamento",
+    "noImage": "Nessuna immagine"
   },
   "navigation": {
     "home": "Home",
@@ -39,6 +57,7 @@
     "settings": "Impostazioni",
     "logout": "Logout",
     "notifications": "Notifiche",
+    "request": "Richiesta",
     "blockedDrivers": "Autisti Bloccati",
     "language": "Lingua"
   },
@@ -50,7 +69,8 @@
     "signInWithApple": "Accedi con Apple",
     "appleSignInFailed": "Accesso Apple Fallito",
     "bySigningIn": "Accedendo, accetti i nostri",
-    "termsAndPrivacy": "Termini e Condizioni e Politica sulla Privacy",
+    "Privacy": "Politica sulla Privacy",
+    "terms": "Termini e Condizioni",
     "welcomeBack": "Bentornato!",
     "pleaseSignIn": "Accedi al tuo account",
     "otpSent": "OTP inviato alla tua email",
@@ -97,7 +117,21 @@
     "city": "Città",
     "state": "Stato",
     "zipCode": "Codice Postale",
-    "country": "Paese"
+    "country": "Paese",
+    "title": "Profilo del conducente",
+    "loading": "Caricamento dati del conducente...",
+    "imageAlt": "Profilo",
+    "name": "Nome",
+    "phone": "Telefono",
+    "license": "Patente di guida",
+    "vin": "Numero VIN",
+    "carType": "Tipo di auto",
+    "year": "Anno",
+    "transmission": "Trasmissione",
+    "capacity": "Capacità di posti",
+    "bio": "Biografia",
+    "totalRides": "Corse totali",
+    "reviews": "Recensioni"
   },
   "bankDetails": {
     "title": "Dettagli Bancari",
@@ -110,6 +144,7 @@
   },
   "drivers": {
     "myDrivers": "I Miei Autisti",
+    "search": "Cerca",
     "driverProfile": "Profilo Autista",
     "driverHistory": "Cronologia Autista",
     "blockedDrivers": "Autisti Bloccati",
@@ -188,7 +223,7 @@
     "fetchError": "Impossibile recuperare i dettagli del pagamento.",
     "somethingWentWrong": "Qualcosa è andato storto durante il recupero dei dettagli del pagamento."
   },
-   "listBlocked": {
+  "listBlocked": {
     "blockedDrivers": "Autisti bloccati",
     "driverName": "Nome del conducente",
     "carType": "Tipo di auto",
@@ -204,13 +239,13 @@
     "actionSuccessful": "Azione riuscita",
     "actionFailed": "Azione fallita"
   },
-   "blockModal": {
+  "blockModal": {
     "block": "Bloccare",
     "unblock": "Sbloccare",
     "blockButton": "Bloccare",
     "unblockButton": "Sbloccare"
   },
-   "paymentSuccessModal": {
+  "paymentSuccessModal": {
     "paymentTransferred": "Il pagamento è stato trasferito con successo",
     "successMessage": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur itaque doloremque, qui ratione architecto, quod cupiditate nihil.",
     "backToHome": "Torna alla home"
@@ -369,7 +404,110 @@
     "notificationSettings": "Impostazioni Notifiche",
     "pushNotifications": "Notifiche Push",
     "emailNotifications": "Notifiche Email",
-    "smsNotifications": "Notifiche SMS"
+    "smsNotifications": "Notifiche SMS",
+    "title": "Notifiche",
+    "loading": "Caricamento delle notifiche...",
+    "empty": "Nessuna notifica disponibile.",
+    "filter": "Filtro",
+    "from": "Da",
+    "to": "A",
+    "keywords": "Parole chiave",
+    "datePlaceholder": "GG/MM/AAAA",
+    "done": "Fatto"
+  },
+  "trackingDetails": {
+    "trackingDetails": "Dettagli di tracciamento",
+    "noDriverData": "Nessun dato del conducente disponibile",
+    "driverInformation": "Informazioni sul conducente",
+    "name": "Nome",
+    "phone": "Telefono",
+    "carType": "Tipo di auto",
+    "vinNumber": "Numero VIN",
+    "year": "Anno",
+    "transmission": "Trasmissione",
+    "seatingCapacity": "Capacità di posti",
+    "reviews": "Recensioni",
+    "notAvailable": "Non disponibile",
+    "map": "Mappa",
+    "date": "Data",
+    "time": "Ora",
+    "pickupLocation": "Luogo di ritiro",
+    "dropOffLocation": "Luogo di consegna",
+    "rideType": "Tipo di corsa",
+    "preBooking": "Prenotazione anticipata",
+    "totalTimeSpent": "Tempo totale",
+    "rideCharges": "Tariffe di corsa",
+    "waitingForDriverLocation": "In attesa della posizione del conducente...",
+    "driverCurrentLocation": "Posizione attuale del conducente",
+    "latitude": "Latitudine",
+    "longitude": "Longitudine",
+    "loading": "Caricamento...",
+    "keyword": "Parola chiave"
+  },
+  "home": {
+    "smbRegistered": "SMB registrato con successo",
+    "publish": "Pubblica",
+    "statistics": "Statistiche",
+    "last7Days": "Ultimi 7 giorni",
+    "last6Days": "Ultimi 6 giorni",
+    "last5Days": "Ultimi 5 giorni",
+    "last4Days": "Ultimi 4 giorni",
+    "last3Days": "Ultimi 3 giorni",
+    "last2Days": "Ultimi 2 giorni",
+    "last1Day": "Ultimo giorno",
+    "onlineDrivers": "Autisti online",
+    "offlineDrivers": "Autisti offline",
+    "revenue": "Entrate",
+    "myDrivers": "I miei autisti",
+    "seeAll": "Vedi tutto",
+    "noEmail": "Nessuna e-mail",
+    "viewProfile": "Visualizza profilo",
+    "totalDrivers": "Totale autisti elencati",
+    "driversOnRides": "Autisti in corsa"
+  },
+  "privacyPolicy": {
+    "title": "Informativa sulla privacy",
+    "loading": "Caricamento dell'informativa sulla privacy...",
+    "fetchError": "Si è verificato un errore imprevisto durante il caricamento dell'informativa sulla privacy.",
+    "noData": "Impossibile recuperare l'informativa sulla privacy: nessun dato trovato"
+  },
+  "deleteAccount": {
+    "heading": "Elimina account",
+    "confirmMessage": "Sei sicuro di voler eliminare il tuo account?",
+    "yes": "Sì",
+    "no": "No",
+    "success": "Account eliminato con successo",
+    "fail": "Impossibile eliminare l'account",
+    "error": "Si è verificato un errore imprevisto durante l'eliminazione dell'account."
+  },
+  "settings": {
+    "notifications": "Notifiche",
+    "notificationSuccess": "Preferenze di notifica aggiornate con successo",
+    "notificationFail": "Aggiornamento delle preferenze di notifica non riuscito",
+    "notificationError": "Si è verificato un errore durante l'aggiornamento delle preferenze di notifica",
+    "twoFactorAuth": "Autenticazione a due fattori",
+    "twoFASuccess": "2FA aggiornata con successo",
+    "twoFAFail": "Aggiornamento delle impostazioni 2FA non riuscito",
+    "twoFAError": "Si è verificato un errore durante l'aggiornamento delle impostazioni 2FA",
+    "language": "Lingua",
+    "privacyPolicy": "Informativa sulla privacy",
+    "termsConditions": "Termini e condizioni",
+    "deleteAccount": "Elimina account",
+    "blockList": "Lista blocchi"
+  },
+  "logout": {
+    "logout": "Esci",
+    "confirmLogout": "Sei sicuro di voler uscire?",
+    "loggedOutSuccessfully": "Disconnesso con successo.",
+    "logoutFailed": "Logout non riuscito. Riprova.",
+    "logoutError": "Si è verificato un errore durante il logout."
+  },
+  "terms": {
+    "heading": "Termini e Condizioni",
+    "loading": "Caricamento dei termini e condizioni...",
+    "fetchError": "Si è verificato un errore imprevisto durante il recupero dei termini e condizioni.",
+    "noData": "Impossibile recuperare i termini e condizioni: Nessun dato trovato",
+    "back": "Indietro"
   },
   "language": {
     "language": "Lingua",
@@ -496,7 +634,7 @@
     "fetchError": "Impossibile recuperare i conducenti.",
     "somethingWentWrong": "Qualcosa è andato storto durante il recupero dei conducenti."
   },
-   "requestProfile": {
+  "requestProfile": {
     "driverProfile": "Profilo del conducente",
     "driverNotAssigned": "Conducente non assegnato.",
     "name": "Nome",
@@ -512,7 +650,7 @@
     "reviews": "Recensioni",
     "nA": "N/D"
   },
-   "request": {
+  "request": {
     "driverRequests": "Richieste del conducente",
     "driverName": "Nome del conducente",
     "date": "Data",
@@ -524,7 +662,7 @@
     "fetchError": "Impossibile recuperare le richieste di conducente.",
     "somethingWentWrong": "Si è verificato un errore durante il recupero delle richieste di conducente."
   },
-   "createProfile": {
+  "createProfile": {
     "createProfile": "Crea profilo",
     "uploadImage": "Carica la tua immagine",
     "businessName": "Nome dell'azienda",
@@ -541,7 +679,7 @@
     "authError": "Errore di autenticazione! Per favore, effettua nuovamente il login.",
     "noImage": "Nessuna immagine"
   },
-   "profilePage": {
+  "profilePage": {
     "businessName": "Nome dell'attività",
     "phoneNumber": "Numero di telefono",
     "businessLicenses": "Licenze aziendali",

@@ -1,5 +1,6 @@
 import React from "react";
 import GlobalBtn from "./GlobalBtn";
+import { useTranslation } from "react-i18next";
 
 interface NotificationModalProps {
   show: boolean;
@@ -10,9 +11,11 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
   show,
   handleClose,
 }) => {
+  const { t } = useTranslation();
+
   const handleBackdropClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if ((e.target as HTMLElement).classList.contains("modal")) {
-      handleClose(); // only close when clicking outside the modal-dialog
+      handleClose();
     }
   };
 
@@ -26,12 +29,12 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
           backgroundColor: "rgba(0, 0, 0, 0.5)",
         }}
         aria-hidden={!show}
-        onClick={handleBackdropClick} // Dismiss on outside click
+        onClick={handleBackdropClick}
       >
         <div
           className="modal-dialog"
           style={{ left: "28%", top: "18%" }}
-          onClick={(e) => e.stopPropagation()} // Prevent click from bubbling up
+          onClick={(e) => e.stopPropagation()}
         >
           <div
             className="modal-content"
@@ -43,26 +46,26 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
               <div className="settingInner_content">
                 <div className="notification_sect">
                   <div className="create-profile-input">
-                    <h4>Filter</h4>
+                    <h4>{t("notifications.filter")}</h4>
                     <form>
                       <div className="row">
                         <div className="col-12 col-md-6">
                           <div className="form-group mt-3">
-                            <label>From</label>
+                            <label>{t("notifications.from")}</label>
                             <input
                               type="text"
                               className="form-control"
-                              placeholder="DD/MM/YYYY"
+                              placeholder={t("notifications.datePlaceholder")}
                             />
                           </div>
                         </div>
                         <div className="col-12 col-md-6">
                           <div className="form-group mt-3">
-                            <label>To</label>
+                            <label>{t("notifications.to")}</label>
                             <input
                               type="text"
                               className="form-control"
-                              placeholder="DD/MM/YYYY"
+                              placeholder={t("notifications.datePlaceholder")}
                             />
                           </div>
                         </div>
@@ -71,13 +74,13 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
                         <input
                           type="text"
                           className="form-control"
-                          placeholder="Keywords"
+                          placeholder={t("notifications.keywords")}
                         />
                       </div>
                     </form>
 
                     <GlobalBtn
-                      text="Done"
+                      text={t("notifications.done")}
                       onClick={handleClose}
                       className="w-100 mt-2"
                     />
@@ -88,8 +91,6 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
           </div>
         </div>
       </div>
-
-      {/* Optional: if you're not using Bootstrap's built-in backdrop */}
       {show && (
         <div
           className="modal-backdrop fade show"

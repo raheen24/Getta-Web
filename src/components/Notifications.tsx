@@ -3,30 +3,32 @@ import Footer from "./Footer";
 import Header from "./Header";
 import Aside from "./Sidebar";
 import NotificationModal from "./NotificationModal";
-// import { BsArrowLeft } from "react-icons/bs";
 import { useNavigate } from "react-router-dom";
-import { apiHelper } from "../services/index"; // Import API helper
-import Message from "./Message"; // Assuming Message component is reusable
-import profPic from "../assets/images/profpic.png"; // Placeholder profile picture
-import moment from "moment"; // For formatting time
+import { apiHelper } from "../services/index";
+import Message from "./Message";
+import profPic from "../assets/images/profpic.png";
+import moment from "moment";
+import { useTranslation } from "react-i18next";
+
 const Notifications = () => {
+  const { t } = useTranslation();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
 
-  const [notifications, setNotifications] = useState([]); // State to store notifications
-  const [isLoading, setIsLoading] = useState(true); // Loading state
+  const [notifications, setNotifications] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const navigate = useNavigate();
 
-  // Function to fetch notifications from API
+  // Fetch notifications
   const fetchNotifications = async () => {
     try {
-      setIsLoading(true); // Set loading to true when fetching starts
+      setIsLoading(true);
       const { response } = await apiHelper("GET", "common/get-notifications");
       if (response?.data?.status === 1) {
-        setNotifications(response.data.data); // Set notifications in state
+        setNotifications(response.data.data);
       } else {
         setNotifications([]);
       }
@@ -34,13 +36,13 @@ const Notifications = () => {
       console.error("API error:", err);
       setNotifications([]);
     } finally {
-      setIsLoading(false); // Set loading to false after the data has been fetched
+      setIsLoading(false);
     }
   };
 
   useEffect(() => {
     fetchNotifications();
-  }, []); 
+  }, []);
 
   const handleBack = () => {
     navigate(-1);
@@ -55,7 +57,7 @@ const Notifications = () => {
       <Header
         isSidebarOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
-        headingText="Notifications"
+        headingText={t("notifications.title")}
         showBackButton={true}
       />
       <Aside isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
@@ -68,21 +70,21 @@ const Notifications = () => {
           />
         </div>
 
-        {/* Loading spinner */}
+        {/* Loading / Empty / List */}
         {isLoading ? (
-          <div>Loading notifications...</div>
+          <div>{t("notifications.loading")}</div>
         ) : (
           <div className="notification_sect">
             {notifications.length === 0 ? (
-              <p>No notifications available.</p>
+              <p>{t("notifications.empty")}</p>
             ) : (
               notifications.map((notification) => (
                 <Message
                   key={notification._id}
-                  name={notification.title} // You might want to fetch sender's name from API or use a static one for now
-                  time={moment(notification.createdAt).fromNow()} // Format time as "2 mins ago"
-                  text={notification.body} // Body of the notification
-                  image={profPic} // Use a placeholder or an image URL if provided by the API
+                  name={notification.title}
+                  time={moment(notification.createdAt).fromNow()}
+                  text={notification.body}
+                  image={profPic}
                 />
               ))
             )}

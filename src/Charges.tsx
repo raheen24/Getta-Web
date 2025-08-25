@@ -9,6 +9,8 @@ import { useDispatch } from "react-redux";
 import { setUser } from "./redux/slice/userSlice";
 import { useTranslation } from "react-i18next";
 
+const MAX_DIGITS = 6;
+
 const Charges = () => {
   const { t } = useTranslation();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
@@ -17,11 +19,7 @@ const Charges = () => {
   };
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 1200) {
-        setSidebarOpen(false);
-      } else {
-        setSidebarOpen(true);
-      }
+      setSidebarOpen(window.innerWidth > 1200);
     };
     window.addEventListener("resize", handleResize);
     handleResize();
@@ -33,11 +31,19 @@ const Charges = () => {
   const [perMinute, setPerMinute] = useState("");
   const [service, setService] = useState("");
 
+  const handleNumericChange = (
+    setter: React.Dispatch<React.SetStateAction<string>>,
+    value: string
+  ) => {
+    const digitsOnly = value.replace(/\D/g, "").slice(0, MAX_DIGITS);
+    setter(digitsOnly);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!perMile || !perMinute || !service) {
-      toast.error(t('validation.fillAllFields'));
+      toast.error(t("validation.fillAllFields"));
       return;
     }
 
@@ -48,24 +54,24 @@ const Charges = () => {
     };
 
     try {
-      const { response, error } = await apiHelper(
+      const { response } = await apiHelper(
         "POST",
         "vendor/set-charges",
         {},
         requestBody
-      );
+      ); 
 
       if (response?.data?.status === 1) {
-        toast.success(t('charges.savedSuccessfully'));
+        toast.success(t("charges.savedSuccessfully"));
 
         if (response.data?.data) {
           dispatch(setUser(response.data.data));
         }
       } else {
-        toast.error(response?.data?.message || t('charges.saveFailed'));
+        toast.error(response?.data?.message || t("charges.saveFailed"));
       }
     } catch (err) {
-      toast.error(t('messages.somethingWentWrong'));
+      toast.error(t("messages.somethingWentWrong"));
       console.error("Error:", err);
     }
   };
@@ -83,40 +89,50 @@ const Charges = () => {
           <div className="charges-input-box">
             <form onSubmit={handleSubmit}>
               <div className="form-group mt-3">
-                <label htmlFor="perMile">{t('charges.perKm')}</label>
+                <label htmlFor="perMile">{t("charges.perKm")}</label>
                 <input
-                  type="number"
+                  type="text"
                   className="form-control"
                   id="perMile"
-                  placeholder={t('charges.enterChargesPerKm')}
+                  placeholder={t("charges.enterChargesPerKm")}
                   value={perMile}
-                  onChange={(e) => setPerMile(e.target.value)}
+                  onChange={(e) =>
+                    handleNumericChange(setPerMile, e.target.value)
+                  }
                 />
               </div>
               <div className="form-group mt-3">
-                <label htmlFor="perMinute">{t('charges.perMinute')}</label>
+                <label htmlFor="perMinute">{t("charges.perMinute")}</label>
                 <input
-                  type="number"
+                  type="text"
                   className="form-control"
                   id="perMinute"
-                  placeholder={t('charges.enterChargesPerMinute')}
+                  placeholder={t("charges.enterChargesPerMinute")}
                   value={perMinute}
-                  onChange={(e) => setPerMinute(e.target.value)}
+                  onChange={(e) =>
+                    handleNumericChange(setPerMinute, e.target.value)
+                  }
                 />
               </div>
               <div className="form-group mt-3">
-                <label htmlFor="service">{t('charges.serviceCharges')}</label>
+                <label htmlFor="service">{t("charges.serviceCharges")}</label>
                 <input
-                  type="number"
+                  type="text"
                   className="form-control"
                   id="service"
-                  placeholder={t('charges.enterServiceCharges')}
+                  placeholder={t("charges.enterServiceCharges")}
                   value={service}
-                  onChange={(e) => setService(e.target.value)}
+                  onChange={(e) =>
+                    handleNumericChange(setService, e.target.value)
+                  }
                 />
               </div>
 
-              <GlobalBtn text={t('common.save')} className="w-100 mt-4" type="submit" />
+              <GlobalBtn
+                text={t("common.save")}
+                className="w-100 mt-4"
+                type="submit"
+              />
             </form>
           </div>
         </div>

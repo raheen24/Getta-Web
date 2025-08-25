@@ -40,7 +40,8 @@
     "logout": "로그아웃",
     "notifications": "알림",
     "blockedDrivers": "차단된 운전자",
-    "language": "언어"
+    "language": "언어",
+    "request": "요청"
   },
   "auth": {
     "signIn": "로그인",
@@ -50,7 +51,8 @@
     "signInWithApple": "Apple로 로그인",
     "appleSignInFailed": "Apple 로그인 실패",
     "bySigningIn": "로그인하면 다음에 동의하는 것으로 간주됩니다",
-    "termsAndPrivacy": "이용약관 및 개인정보처리방침",
+    "Privacy": "개인정보처리방침",
+    "terms": "이용약관 및",
     "welcomeBack": "다시 오신 것을 환영합니다!",
     "pleaseSignIn": "계정에 로그인해 주세요",
     "otpSent": "이메일로 OTP가 전송되었습니다",
@@ -98,7 +100,21 @@
     "city": "도시",
     "state": "주",
     "zipCode": "우편번호",
-    "country": "국가"
+    "country": "국가",
+    "title": "운전자 프로필",
+    "loading": "운전자 데이터를 불러오는 중...",
+    "imageAlt": "프로필",
+    "name": "이름",
+    "phone": "전화번호",
+    "license": "운전면허",
+    "vin": "차대번호 (VIN)",
+    "carType": "차량 종류",
+    "year": "연식",
+    "transmission": "변속기",
+    "capacity": "승차 인원",
+    "bio": "소개",
+    "totalRides": "총 운행 횟수",
+    "reviews": "리뷰"
   },
   "bankDetails": {
     "title": "은행 정보",
@@ -114,6 +130,7 @@
     "driverProfile": "운전자 프로필",
     "driverHistory": "운전자 기록",
     "blockedDrivers": "차단된 운전자",
+    "search": "검색",
     "addDriver": "운전자 추가",
     "driverName": "운전자 이름",
     "driverId": "운전자 ID",
@@ -196,12 +213,12 @@
     "bankName": "은행 이름: ******5487",
     "payNow": "지금 결제"
   },
-    "paymentSuccessModal": {
+  "paymentSuccessModal": {
     "paymentTransferred": "결제가 성공적으로 전송되었습니다",
     "successMessage": "Lorem ipsum dolor sit amet consectetur adipisicing elit. Aspernatur itaque doloremque, qui ratione architecto, quod cupiditate nihil.",
     "backToHome": "홈으로 돌아가기"
   },
-   "listBlocked": {
+  "listBlocked": {
     "blockedDrivers": "차단된 운전사",
     "driverName": "운전사 이름",
     "carType": "차량 종류",
@@ -240,7 +257,7 @@
     "reviews": "리뷰",
     "nA": "N/A"
   },
-   "request": {
+  "request": {
     "driverRequests": "운전사 요청",
     "driverName": "운전사 이름",
     "date": "날짜",
@@ -252,7 +269,7 @@
     "fetchError": "운전사 요청을 가져오는 데 실패했습니다.",
     "somethingWentWrong": "운전사 요청을 가져오는 중 문제가 발생했습니다."
   },
-    "createProfile": {
+  "createProfile": {
     "createProfile": "프로필 만들기",
     "uploadImage": "이미지 업로드",
     "businessName": "사업 이름",
@@ -269,7 +286,7 @@
     "authError": "인증 오류! 다시 로그인 해주세요.",
     "noImage": "이미지 없음"
   },
-    "profilePage": {
+  "profilePage": {
     "businessName": "업체 이름",
     "phoneNumber": "전화번호",
     "businessLicenses": "사업자 등록증",
@@ -415,6 +432,35 @@
     "citiesLimits": "도시 한도",
     "timeLimit": "시간 한도"
   },
+  "trackingDetails": {
+    "trackingDetails": "추적 세부정보",
+    "noDriverData": "운전자 데이터가 없습니다",
+    "driverInformation": "운전자 정보",
+    "name": "이름",
+    "phone": "전화번호",
+    "carType": "차량 종류",
+    "vinNumber": "차대 번호",
+    "year": "연식",
+    "transmission": "변속기",
+    "seatingCapacity": "좌석 수",
+    "reviews": "리뷰",
+    "notAvailable": "이용 불가",
+    "map": "지도",
+    "date": "날짜",
+    "time": "시간",
+    "pickupLocation": "픽업 위치",
+    "dropOffLocation": "하차 위치",
+    "rideType": "운행 유형",
+    "preBooking": "사전 예약",
+    "totalTimeSpent": "총 소요 시간",
+    "rideCharges": "운행 요금",
+    "waitingForDriverLocation": "운전자 위치를 기다리는 중...",
+    "driverCurrentLocation": "운전자의 현재 위치",
+    "latitude": "위도",
+    "longitude": "경도",
+    "loading": "로딩 중...",
+    "keyword": "키워드"
+  },
   "notifications": {
     "notifications": "알림",
     "notification": "알림",
@@ -424,7 +470,16 @@
     "notificationSettings": "알림 설정",
     "pushNotifications": "푸시 알림",
     "emailNotifications": "이메일 알림",
-    "smsNotifications": "SMS 알림"
+    "smsNotifications": "SMS 알림",
+    "title": "알림",
+    "loading": "알림을 불러오는 중...",
+    "empty": "사용 가능한 알림이 없습니다.",
+    "filter": "필터",
+    "from": "시작",
+    "to": "종료",
+    "keywords": "키워드",
+    "datePlaceholder": "년/월/일",
+    "done": "완료"
   },
   "language": {
     "language": "언어",
@@ -508,6 +563,71 @@
     "pending": "대기 중",
     "cancelled": "취소됨"
   },
+  "home": {
+    "smbRegistered": "SMB가 성공적으로 등록되었습니다",
+    "publish": "게시",
+    "statistics": "통계",
+    "last7Days": "지난 7일",
+    "last6Days": "지난 6일",
+    "last5Days": "지난 5일",
+    "last4Days": "지난 4일",
+    "last3Days": "지난 3일",
+    "last2Days": "지난 2일",
+    "last1Day": "지난 1일",
+    "onlineDrivers": "온라인 드라이버",
+    "offlineDrivers": "오프라인 드라이버",
+    "revenue": "수익",
+    "myDrivers": "내 드라이버",
+    "seeAll": "모두 보기",
+    "noEmail": "이메일 없음",
+    "viewProfile": "프로필 보기",
+    "totalDrivers": "총 드라이버 수",
+    "driversOnRides": "운행 중인 드라이버"
+  },
+  "privacyPolicy": {
+    "title": "개인정보 처리방침",
+    "loading": "개인정보 처리방침을 불러오는 중...",
+    "fetchError": "개인정보 처리방침을 불러오는 동안 예기치 않은 오류가 발생했습니다.",
+    "noData": "개인정보 처리방침을 불러오지 못했습니다: 데이터가 없습니다"
+  },
+  "settings": {
+    "notifications": "알림",
+    "notificationSuccess": "알림 설정이 성공적으로 업데이트되었습니다",
+    "notificationFail": "알림 설정 업데이트에 실패했습니다",
+    "notificationError": "알림 설정 업데이트 중 오류가 발생했습니다",
+    "twoFactorAuth": "2단계 인증",
+    "twoFASuccess": "2단계 인증이 성공적으로 업데이트되었습니다",
+    "twoFAFail": "2단계 인증 업데이트에 실패했습니다",
+    "twoFAError": "2단계 인증 업데이트 중 오류가 발생했습니다",
+    "language": "언어",
+    "privacyPolicy": "개인정보 처리방침",
+    "termsConditions": "약관 및 조건",
+    "deleteAccount": "계정 삭제",
+    "blockList": "차단 목록"
+  },
+  "logout": {
+    "logout": "로그아웃",
+    "confirmLogout": "로그아웃 하시겠습니까?",
+    "loggedOutSuccessfully": "성공적으로 로그아웃되었습니다.",
+    "logoutFailed": "로그아웃 실패. 다시 시도해주세요.",
+    "logoutError": "로그아웃 중 오류가 발생했습니다."
+  },
+  "deleteAccount": {
+    "heading": "계정 삭제",
+    "confirmMessage": "계정을 삭제하시겠습니까?",
+    "yes": "예",
+    "no": "아니요",
+    "success": "계정이 성공적으로 삭제되었습니다",
+    "fail": "계정 삭제에 실패했습니다",
+    "error": "계정을 삭제하는 중 예기치 않은 오류가 발생했습니다."
+  },
+  "terms": {
+    "heading": "이용 약관",
+    "loading": "이용 약관을 불러오는 중...",
+    "fetchError": "이용 약관을 불러오는 중 예기치 않은 오류가 발생했습니다.",
+    "noData": "이용 약관을 가져오지 못했습니다: 데이터가 없습니다",
+    "back": "뒤로"
+  },
   "trackingRider": {
     "trackingRider": "라이더 추적",
     "driverInformation": "운전사 정보",
@@ -551,5 +671,22 @@
     "listDrivers": "최근 14일 동안 금액을 이체한 운전사 목록",
     "fetchError": "운전사를 가져오는 데 실패했습니다.",
     "somethingWentWrong": "운전사를 가져오는 중 문제가 발생했습니다."
+  },
+  "editProfile": {
+    "editProfile": "프로필 수정",
+    "uploadImage": "이미지 업로드",
+    "businessName": "회사 이름",
+    "phoneNumber": "전화번호",
+    "businessLicenses": "사업자 등록증",
+    "taxIdentificationNumber": "세금 식별 번호",
+    "uploadedDocumentFile": "업로드된 파일",
+    "remove": "삭제",
+    "updateProfile": "프로필 업데이트",
+    "fetchError": "프로필 데이터를 불러오지 못했습니다.",
+    "fillAllFields": "모든 필수 항목을 입력해주세요.",
+    "profileUpdated": "프로필이 성공적으로 업데이트되었습니다!",
+    "profileUpdateFailed": "프로필 업데이트 실패",
+    "updateError": "업데이트 중 오류가 발생했습니다",
+    "noImage": "이미지 없음"
   }
 }

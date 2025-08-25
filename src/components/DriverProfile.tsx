@@ -4,16 +4,17 @@ import Header from "./../components/Header";
 import Aside from "./../components/Sidebar";
 import Footer from "./../components/Footer";
 import proImg from "../assets/images/profile_img.png";
-import GraphAndNum from "../assets/images/graphandnum.png";
 import { useLocation, useSearchParams } from "react-router-dom";
-import { apiHelper } from "../services";
+import { useTranslation } from "react-i18next";
 import DriverRatingStats from "./DriverRatingStats";
 
 const ProfilePage: React.FC = () => {
+  const { t } = useTranslation();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 1200) {
@@ -23,42 +24,17 @@ const ProfilePage: React.FC = () => {
       }
     };
     window.addEventListener("resize", handleResize);
-    handleResize(); // Call on initial render
+    handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   const [searchParams] = useSearchParams();
   const driverId = searchParams.get("id");
-  //   const [driver, setDriver] = useState<any>(null);
+
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const location = useLocation();
   const driver = location.state || {};
   const vehicle = driver.vehicle || {};
-  //   const fetchDriver = async () => {
-  //     try {
-  //       console.log("Fetching driver with ID:", driverId);
-  //       const result = await apiHelper(
-  //         "GET",
-  //         `/vendor/get-drivers?id=${driverId}`
-  //       );
-  //       console.log("Driver API result:", result.response.data.data[0]);
-
-  //       if (result) {
-  //         setDriver(result.response.data.data[0]);
-  //       } else {
-  //         console.error("Failed to fetch driver:", result?.data?.message);
-  //       }
-  //     } catch (err) {
-  //       console.error("API error:", err);
-  //     }
-  //   };
-
-  //   useEffect(() => {
-  //     if (!driverId) {
-  //       console.error("No driver ID in URL");
-  //       return;
-  //     }
-  //     fetchDriver();
-  //   }, [driverId]);
 
   const handleProfileImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -80,7 +56,7 @@ const ProfilePage: React.FC = () => {
       <Header
         isSidebarOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
-        headingText="Driver Profile"
+        headingText={t("profile.title")}
         showBackButton={true}
         showHeading={true}
       />
@@ -88,7 +64,7 @@ const ProfilePage: React.FC = () => {
       <section className="content_section">
         <div className="profile_page">
           {!driver ? (
-            <p className="text-center mt-5">Loading driver data...</p>
+            <p className="text-center mt-5">{t("profile.loading")}</p>
           ) : (
             <div className="profile-sec">
               <div className="cover-image-bg"></div>
@@ -99,7 +75,7 @@ const ProfilePage: React.FC = () => {
                     src={previewImage || getFullImageUrl(driver?.image)}
                     roundedCircle
                     className="profile-image"
-                    alt="Profile"
+                    alt={t("profile.imageAlt")}
                     onError={(e: any) => {
                       e.target.onerror = null;
                       e.target.src = proImg;
@@ -113,66 +89,67 @@ const ProfilePage: React.FC = () => {
                   <Col xs={12} lg={6} className="pe-lg-4 business-info-col">
                     <ul className="profile-info-list">
                       <li>
-                        <span className="label"> Name</span>
+                        <span className="label">{t("profile.name")}</span>
                         <span className="value">
-                          {driver?.fullName || "N/A"}
+                          {driver?.fullName || t("common.notAvailable")}
                         </span>
                       </li>
                       <li>
-                        <span className="label">Phone</span>
+                        <span className="label">{t("profile.phone")}</span>
                         <span className="value">
-                          {driver?.phoneNumber || "N/A"}
+                          {driver?.phoneNumber || t("common.notAvailable")}
                         </span>
                       </li>
                       <li>
-                        <span className="label">Driving License</span>
+                        <span className="label">{t("profile.license")}</span>
                         <span className="value">
-                          {driver?.drivingLicense || "N/A"}
+                          {driver?.drivingLicense || t("common.notAvailable")}
                         </span>
                       </li>
                       <li>
-                        <span className="label">VIN Number</span>
+                        <span className="label">{t("profile.vin")}</span>
                         <span className="value">
-                          {vehicle?.vehicleIdentificationNumber || "N/A"}
+                          {vehicle?.vehicleIdentificationNumber ||
+                            t("common.notAvailable")}
                         </span>
                       </li>
                       <li>
-                        <span className="label">Car Type</span>
+                        <span className="label">{t("profile.carType")}</span>
                         <span className="value">
-                          {vehicle?.carType || "N/A"}
+                          {vehicle?.carType || t("common.notAvailable")}
                         </span>
                       </li>
                       <li>
-                        <span className="label">Year</span>
-                        <span className="value">{vehicle?.year || "N/A"}</span>
-                      </li>
-                      <li>
-                        <span className="label">Transmission</span>
+                        <span className="label">{t("profile.year")}</span>
                         <span className="value">
-                          {vehicle?.transmission || "N/A"}
+                          {vehicle?.year || t("common.notAvailable")}
                         </span>
                       </li>
                       <li>
-                        <span className="label">Seating Capacity</span>
+                        <span className="label">
+                          {t("profile.transmission")}
+                        </span>
                         <span className="value">
-                          {vehicle?.seatingCapacity || "N/A"}
+                          {vehicle?.transmission || t("common.notAvailable")}
                         </span>
                       </li>
-
                       <li>
-                        <span className="label">Bio</span>
-                        <span className="value">{driver?.bio || "N/A"}</span>
+                        <span className="label">{t("profile.capacity")}</span>
+                        <span className="value">
+                          {vehicle?.seatingCapacity || t("common.notAvailable")}
+                        </span>
+                      </li>
+                      <li>
+                        <span className="label">{t("profile.bio")}</span>
+                        <span className="value">
+                          {driver?.bio || t("common.notAvailable")}
+                        </span>
                       </li>
                     </ul>
                   </Col>
 
                   <Col xs={12} lg={6} className="business-documents-col">
                     <div className="mb-4" style={{ marginTop: "25px" }}>
-                      {/* <DriverRatingStats
-                        totalRides={driver?.totalRides || 0}
-                        totalReviews={driver?.totalReviews || 0}
-                        averageRating={driver?.averageRating || 0}
-                      /> */}
                       <DriverRatingStats
                         earnings={driver?.earnings || 0}
                         date={new Date().toLocaleString("en-GB", {
@@ -190,7 +167,7 @@ const ProfilePage: React.FC = () => {
                           <div className="business-upload-sec border rounded p-3">
                             <div className="d-block">
                               <h5 className="fw-bold colorofall">
-                                Total Rides
+                                {t("profile.totalRides")}
                               </h5>
                               <p className="mb-0 fw-bold colorofall text-center">
                                 {driver?.totalRides || 0}
@@ -202,7 +179,9 @@ const ProfilePage: React.FC = () => {
                         <Col xs={6} sm={6} className="mb-3">
                           <div className="business-upload-sec border rounded p-3">
                             <div className="d-block">
-                              <h5 className="fw-bold colorofall">Reviews</h5>
+                              <h5 className="fw-bold colorofall">
+                                {t("profile.reviews")}
+                              </h5>
                               <p className="mb-0 fw-bold colorofall text-center">
                                 {driver?.totalReviews || 0}
                               </p>

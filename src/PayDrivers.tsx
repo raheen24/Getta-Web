@@ -103,16 +103,14 @@ const PayDrives = () => {
         <div className="d-flex justify-content-end align-items-center mb-4">
           <div className="d-flex w-100 justify-content-between align-items-center mb-3">
             <div>
-             <p className="mb-0">
-                {t("payDrives.listDrivers")}
-              </p>
+              <p className="mb-0">{t("payDrives.listDrivers")}</p>
             </div>
 
             <div className="d-flex align-items-center gap-2">
               <div className="searchField">
                 <input
                   type="text"
-                  placeholder="Search"
+                  placeholder={t("drivers.search")}
                   value={searchTerm}
                   onChange={(e) => {
                     setSearchTerm(e.target.value);
@@ -187,11 +185,10 @@ const PayDrives = () => {
                         color: driver.payment === "Paid" ? "green" : "red",
                         cursor: "pointer",
                       }}
-                      onClick={
-                        () =>
-                          driver.payment === "Paid"
-                            ? navigate(`/paid-details/${driver._id}`)
-                            : navigate(`/payment/${driver._id}`)
+                      onClick={() =>
+                        driver.payment === "Paid"
+                          ? navigate(`/paid-details/${driver._id}`)
+                          : navigate(`/payment/${driver._id}`)
                       }
                     >
                       <p className="colorofall td_date mb-0">

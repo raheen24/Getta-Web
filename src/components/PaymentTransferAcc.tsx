@@ -3,12 +3,12 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import { useNavigate } from "react-router-dom";
 import GlobalBtn from "./GlobalBtn";
 import Header from "./Header";
-import arrowBack from "../assets/images/arrow_back.png";
 import { Form } from "react-bootstrap";
 import { FaUniversity } from "react-icons/fa";
 import TransferModal from "./PaymentSuccessModal";
 import Aside from "./Sidebar";
 import { useTranslation } from "react-i18next";
+import { toast } from "react-toastify";
 
 interface PaymentTransferAccProps {
   selectedDriver: {
@@ -22,6 +22,7 @@ const PaymentTransferAcc: React.FC<PaymentTransferAccProps> = ({
   const { t } = useTranslation();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
+  const [amount, setAmount] = useState("");
 
   const goBack = () => {
     navigate(-1);
@@ -68,10 +69,15 @@ const PaymentTransferAcc: React.FC<PaymentTransferAccProps> = ({
             <Form.Group controlId="formAmount" className="mb-4">
               <Form.Control
                 type="text"
+                inputMode="numeric"
                 placeholder={t("paymentTransferAcc.enterAmount")}
+                value={amount}
+                onChange={(e) => {
+                  const digitsOnly = e.target.value.replace(/\D/g, "");
+                  setAmount(digitsOnly.slice(0, 6));
+                }}
               />
             </Form.Group>
-
             <div className="payment-method-box mb-4">
               <div className="bank-icon-wrapper me-3">
                 <FaUniversity size={18} color="#4B5563" />
@@ -83,12 +89,17 @@ const PaymentTransferAcc: React.FC<PaymentTransferAccProps> = ({
               </div>
               <input type="radio" name="bank" checked readOnly />
             </div>
-
             <GlobalBtn
               text={t("paymentTransferAcc.payNow")}
               color="success"
               className="w-100 mt-5"
-              onClick={() => setShowModal(true)}
+              onClick={() => {
+                if (!amount || parseInt(amount) <= 0) {
+                  toast.error("Amount field can’t be empty");
+                  return;
+                }
+                setShowModal(true);
+              }}
             />
 
             <TransferModal

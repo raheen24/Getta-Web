@@ -6,7 +6,7 @@ interface User {
 }
 
 interface UserState {
-  user: User | null; 
+  user: User | null;
   token: string;
   isLogin: boolean;
   fcmToken: string;
@@ -31,7 +31,7 @@ const userSlice = createSlice({
 
     setUser: (state, action: PayloadAction<User | null>) => {
       state.user = action.payload || null;
-      state.isLogin = !!action.payload; 
+      state.isLogin = !!action.payload;
     },
 
     setToken: (state, action: PayloadAction<string>) => {
@@ -42,7 +42,13 @@ const userSlice = createSlice({
       state.user = null;
       state.isLogin = false;
       state.token = "";
-      state.fcmToken = ""; 
+      state.fcmToken = "";
+    },
+    setDeleteAccount: (state) => {
+      state.user = null;
+      state.isLogin = false;
+      state.token = "";
+      state.fcmToken = "";
     },
 
     setFcmToken: (state, action: PayloadAction<string>) => {
@@ -51,5 +57,12 @@ const userSlice = createSlice({
   },
 });
 
-export const { setLogin, setUser, setToken, setLogout, setFcmToken } = userSlice.actions;
+export const {
+  setLogin,
+  setUser,
+  setToken,
+  setLogout,
+  setFcmToken,
+  setDeleteAccount,
+} = userSlice.actions;
 export default userSlice.reducer;

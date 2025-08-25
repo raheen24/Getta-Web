@@ -138,7 +138,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, toggleSidebar }) => {
                 alt="Request Active"
               />
             </span>
-            {isSidebarOpen && <span className="link-text">{t('navigation.previous')}</span>}
+            {isSidebarOpen && <span className="link-text">{t('navigation.request')}</span>}
           </NavLink>
         </li>
 
@@ -307,7 +307,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, toggleSidebar }) => {
               <img src={LogoutIcon} className="default_icons" alt="Logout" />
               <img src={LogoutIconActive} className="active_icons" alt="Logout Active" />
             </span>
-            {isSidebarOpen && <span className="link-text">{t('navigation.logout')}</span>}
+            {isSidebarOpen && <span className="link-text">{t("logout.logout")}</span>}
           </a>
         </li>
       </ul>

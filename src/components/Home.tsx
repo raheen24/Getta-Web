@@ -13,6 +13,7 @@ import { toast } from "react-toastify";
 import { useLocation } from "react-router-dom";
 import { useState, useEffect, ChangeEvent } from "react";
 import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 interface Driver {
   _id: string;
@@ -44,6 +45,8 @@ interface PieDataItem {
 }
 
 const Dashboard = () => {
+  const { t } = useTranslation();
+
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
@@ -82,7 +85,7 @@ const Dashboard = () => {
     revenue: 0,
     change: "0.0",
   });
-  const {user,token} = useSelector((state: any) => state.user);
+  const { user, token } = useSelector((state: any) => state.user);
   console.log(token);
   const navigate = useNavigate();
 
@@ -103,28 +106,6 @@ const Dashboard = () => {
   const query = useQuery();
   const driverId = query.get("id");
 
-  // const fetchDrivers = async () => {
-  //   try {
-  //     const { response } = await apiHelper("GET", "vendor/get-drivers");
-  //     if (response?.data?.status === 1) {
-  //       setDrivers(
-  //         (response.data.data || []).map((item: any) => ({
-  //           ...item.driver,
-  //           vehicle: item.vehicle,
-  //           averageRating: item.averageRating,
-  //           totalReviews: item.totalReviews,
-  //         }))
-  //       );
-  //     } else {
-  //       toast.error(response?.data?.message || "Failed to fetch drivers.");
-  //       setDrivers([]);
-  //     }
-  //   } catch (err) {
-  //     toast.error("Something went wrong while fetching drivers.");
-  //     console.error("Fetch error:", err);
-  //     setDrivers([]);
-  //   }
-  // };
   const fetchDrivers = async () => {
     try {
       const { response } = await apiHelper("GET", "vendor/get-drivers");
@@ -133,7 +114,6 @@ const Dashboard = () => {
           (response.data.data || []).map((item: any) => ({
             ...item.driver,
             vehicle: item.vehicle,
-            // Ensure averageRating is a number
             averageRating: item.averageRating
               ? parseFloat(item.averageRating)
               : undefined,
@@ -235,7 +215,6 @@ const Dashboard = () => {
 
         setRevenueGraphData(formattedData);
 
-        // Get latest and previous revenue
         const len = data.length;
         if (len >= 2) {
           const latest = data[len - 1];
@@ -257,7 +236,7 @@ const Dashboard = () => {
               hour12: false,
             }),
             revenue: latest.totalRevenue || 0,
-            change: percentChange.toFixed(1), // e.g., "3.4"
+            change: percentChange.toFixed(1),
           });
         }
       } else {
@@ -290,7 +269,7 @@ const Dashboard = () => {
           <div className="row">
             <div className="col-12 col-md-7 col-lg-7 mb-2">
               <div className="smb-heading">
-                <h1 className="sub-heading">SMB has Successfully Registered</h1>
+                <h1 className="sub-heading">{t("home.smbRegistered")}</h1>
                 <button
                   data-bs-dismiss="modal"
                   data-bs-toggle="modal"
@@ -299,32 +278,34 @@ const Dashboard = () => {
                   className="text-white rounded-3 p-1 px-4"
                   style={{ backgroundColor: "#70927F" }}
                 >
-                  Publish
+                  {t("home.publish")}
                 </button>
                 <PublishModal
                   show={showModal}
                   handleClose={() => setShowModal(false)}
                 />
               </div>
+
               <div className="bg_white bgColor">
                 <div
                   className="titleSection"
                   data-aos="fade-up"
                   data-aos-duration="1000"
                 >
-                  <p className="title">Statistics</p>
+                  <p className="title">{t("home.statistics")}</p>
                   <div className="inputField">
                     <select value={selectedTime} onChange={handleTimeChange}>
-                      <option value="0">Last 7 Days</option>
-                      <option value="1">Last 6 Days</option>
-                      <option value="2">Last 5 Days</option>
-                      <option value="3">Last 4 Days</option>
-                      <option value="4">Last 3 Days</option>
-                      <option value="5">Last 2 Days</option>
-                      <option value="6">Last 1 Day</option>
+                      <option value="0">{t("home.last7Days")}</option>
+                      <option value="1">{t("home.last6Days")}</option>
+                      <option value="2">{t("home.last5Days")}</option>
+                      <option value="3">{t("home.last4Days")}</option>
+                      <option value="4">{t("home.last3Days")}</option>
+                      <option value="5">{t("home.last2Days")}</option>
+                      <option value="6">{t("home.last1Day")}</option>
                     </select>
                   </div>
                 </div>
+
                 <div className="pieChart_section">
                   <div className="pieChartLeftSect">
                     <h3
@@ -337,14 +318,14 @@ const Dashboard = () => {
                     </h3>
                     <ul className="Barbers_list">
                       <li data-aos="fade-up" data-aos-duration="2000">
-                        <p>Online Drivers</p>
+                        <p>{t("home.onlineDrivers")}</p>
                         <span className="numText">
                           {driverStats2.online.toLocaleString()}
                           <span className="bgBlue">+0%</span>
                         </span>
                       </li>
                       <li data-aos="fade-up" data-aos-duration="3000">
-                        <p>Offline Drivers</p>
+                        <p>{t("home.offlineDrivers")}</p>
                         <span className="numText">
                           {driverStats2.offline.toLocaleString()}
                           <span className="bgBlue">+0%</span>
@@ -360,6 +341,7 @@ const Dashboard = () => {
                 </div>
               </div>
             </div>
+
             <div className="col-12 col-md-5 col-lg-5 mb-2">
               <div className="bgColor bg_white">
                 <div
@@ -367,14 +349,7 @@ const Dashboard = () => {
                   data-aos="fade-up"
                   data-aos-duration="1000"
                 >
-                  <p className="title">REVENUE</p>
-                  {/* <h3 className="numText totalRevenue">
-                      {totalRevenue.toLocaleString(undefined, {
-                        style: "currency",
-                        currency: "USD",
-                        minimumFractionDigits: 2,
-                      })}
-                    </h3> */}
+                  <p className="title">{t("home.revenue")}</p>
                   <h3 className="numText totalRevenue">
                     {totalRevenue.toLocaleString(undefined, {
                       minimumFractionDigits: 2,
@@ -408,16 +383,17 @@ const Dashboard = () => {
               </div>
             </div>
           </div>
+
           <div className="index-my-drivers">
             <div className="my-drivers-heading">
-              <h2 className="sub-heading">My Drivers</h2>
-              <a onClick={handleSeeAllClick}>See All</a>
+              <h2 className="sub-heading">{t("home.myDrivers")}</h2>
+              <a onClick={handleSeeAllClick}>{t("home.seeAll")}</a>
             </div>
+
             <Row>
-              {/* <div className="drivers-box-sec"> */}
               {drivers.map((driver) => (
                 <Col lg={3} md={4} sm={6} className="mb-3" key={driver._id}>
-                  <div key={driver._id} className="driver-card">
+                  <div className="driver-card">
                     <img
                       src={
                         driver.image
@@ -433,7 +409,9 @@ const Dashboard = () => {
                     <h6 className="driver-name">
                       {driver.driverName || driver.name || driver.fullName}
                     </h6>
-                    <p className="driver-email">{driver.email || "No email"}</p>
+                    <p className="driver-email">
+                      {driver.email || t("home.noEmail")}
+                    </p>
                     <div className="driver-rating">
                       {[...Array(5)].map((_, index) => (
                         <FaStar key={index} className="star-icon" />
@@ -448,39 +426,40 @@ const Dashboard = () => {
                       onClick={() => handleSeeProfile(driver)}
                       className="bgBlue"
                     >
-                      View Profile
+                      {t("home.viewProfile")}
                     </a>
                   </div>
                 </Col>
               ))}
-              {/* </div> */}
             </Row>
           </div>
-          <div className="index-my-drivers-map ">
+
+          <div className="index-my-drivers-map">
             <div className="row">
               <div className="col-12 col-md-5 col-lg-4 mb-2">
                 <div className="my-drivers-map bg_white">
-                  <h2 className="sub-heading">My Drivers</h2>
+                  <h2 className="sub-heading">{t("home.myDrivers")}</h2>
                   <ul>
                     <li>
-                      <span>Total Drivers Listed</span>
+                      <span>{t("home.totalDrivers")}</span>
                       <span>{driverStats.total}</span>
                     </li>
                     <li>
-                      <span>Online Drivers</span>
+                      <span>{t("home.onlineDrivers")}</span>
                       <span>{driverStats.online}</span>
                     </li>
                     <li>
-                      <span>Offline Drivers</span>
+                      <span>{t("home.offlineDrivers")}</span>
                       <span>{driverStats.offline}</span>
                     </li>
                     <li>
-                      <span>Drivers on Rides</span>
+                      <span>{t("home.driversOnRides")}</span>
                       <span>{driverStats.onRides}</span>
                     </li>
                   </ul>
                 </div>
               </div>
+
               <div className="col-12 col-md-7 col-lg-8">
                 <div className="location_map">
                   <MapofBottomProf />

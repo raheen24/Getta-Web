@@ -18,7 +18,7 @@ const BlockModal: React.FC<BlockModalProps> = ({
 
   return (
     <div className="modal-overlay-of-block">
-      <div className="modal-content-of-block">
+      <div className="modal-content-of-block" onClick={(e) => e.stopPropagation()}>
         {/* Close Button */}
         <button className="close-btn-of-block" onClick={onCancel}>
           &times;
@@ -28,7 +28,7 @@ const BlockModal: React.FC<BlockModalProps> = ({
         </h3>
         
         <h3 className="modal-text-of-block">{userName}</h3> {/* Driver's name */}
-        <div className="modal-actions-of-block">
+        <div className="modal-actions-of-block text-center">
           <button
             className="block-btn-of-block"
             onClick={onConfirm}

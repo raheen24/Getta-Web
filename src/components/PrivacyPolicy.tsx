@@ -4,6 +4,7 @@ import arrowBack from "../assets/images/arrow_back.png";
 import Header from "./Header";
 import Aside from "./Sidebar";
 import { apiHelper } from "../services";
+import { useTranslation } from "react-i18next";
 
 const PrivacyPolicy = () => {
   const navigate = useNavigate();
@@ -12,34 +13,37 @@ const PrivacyPolicy = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
 
+  const { t, i18n } = useTranslation();
+
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
+
   useEffect(() => {
     const handleFetchPrivacyPolicy = async () => {
       setLoading(true);
       try {
         const { response, error } = await apiHelper(
           "GET",
-          "common/privacy_policy",
+          `common/privacy_policy?lang=${i18n.language}`,
           {}
         );
-        
+
         if (response && response.data.data) {
           setPrivacyContent(response.data.data);
         } else {
-          setError("Failed to fetch privacy policy: No data found");
+          setError(t("privacyPolicy.noData"));
         }
       } catch (err) {
-        setError("Unexpected error occurred while fetching privacy policy.");
+        setError(t("privacyPolicy.fetchError"));
         console.error("API Error:", err);
       } finally {
         setLoading(false);
       }
     };
 
-    handleFetchPrivacyPolicy();  
-  }, []);
+    handleFetchPrivacyPolicy();
+  }, [i18n.language, t]);
 
   return (
     <div
@@ -53,16 +57,16 @@ const PrivacyPolicy = () => {
         <div className="my_drivers_page bg_wrapper">
           <div className="back-btn-sec">
             <button
-              className="backBtn border-0 bg-transparent"
+              className="backBtn border-0 bg-transparent mb-2"
               onClick={() => navigate(-1)}
             >
-              <img src={arrowBack} alt="Back" />
+              <img src={arrowBack} alt={t("common.back")} />
             </button>
           </div>
           <div className="privacy-policy-sec">
-            <h1 className="sub-heading mb-3">Privacy Policy</h1>
+            <h1 className="sub-heading mb-3">{t("privacyPolicy.title")}</h1>
             {loading ? (
-              <p>Loading privacy policy...</p>
+              <p>{t("privacyPolicy.loading")}</p>
             ) : error ? (
               <p className="error">{error}</p>
             ) : (

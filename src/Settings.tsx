@@ -5,17 +5,23 @@ import DeleteAccountModal from "./components/DeleteAccountModal";
 import Aside from "./components/Sidebar";
 import { apiHelper } from "./services";
 import { toast } from "react-toastify";
+import { useSelector } from "react-redux";
+import { RootState } from "./redux";
+import { useTranslation } from "react-i18next";
+
+const LS_KEY = "app_settings";
 
 const SettingsPage = () => {
+  const { t } = useTranslation();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
-  const [notifications, setNotifications] = useState(true);
-  const [twoFactorAuth, setTwoFactorAuth] = useState(true); 
+  const [notifications, setNotifications] = useState<boolean>(true);
+  const [twoFactorAuth, setTwoFactorAuth] = useState<boolean>(true);
   const [showModal, setShowModal] = useState(false);
-  const [userId, setUserId] = useState(localStorage.getItem("userId"));
+  const [userId] = useState(localStorage.getItem("userId"));
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!isSidebarOpen);
-  };
+  const { token } = useSelector((s: RootState) => s.user);
+
+  const toggleSidebar = () => setSidebarOpen((v) => !v);
 
   const handleDelete = () => {
     console.log("Deleting account...");
@@ -23,69 +29,104 @@ const SettingsPage = () => {
   };
 
   useEffect(() => {
-    const handleResize = () => {
-      if (window.innerWidth <= 1200) {
-        setSidebarOpen(false);
-      } else {
-        setSidebarOpen(true);
-      }
-    };
+    const handleResize = () => setSidebarOpen(window.innerWidth > 1200);
     window.addEventListener("resize", handleResize);
     handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  useEffect(() => {
+    const raw = localStorage.getItem(LS_KEY);
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw);
+        if (typeof parsed.notifications === "boolean")
+          setNotifications(parsed.notifications);
+        if (typeof parsed.twoFactorAuth === "boolean")
+          setTwoFactorAuth(parsed.twoFactorAuth);
+      } catch {}
+    }
+
+    const fetchSettings = async () => {
+      if (!token) return;
+      try {
+        const { response } = await apiHelper("GET", "common/user-settings", {
+          Authorization: `Bearer ${token}`,
+        });
+        if (response?.data?.status === 1) {
+          const serverNotif = !!response.data.data?.isNotification;
+          const server2FA = !!response.data.data?.is2FactorEnabled;
+          setNotifications(serverNotif);
+          setTwoFactorAuth(server2FA);
+          localStorage.setItem(
+            LS_KEY,
+            JSON.stringify({
+              notifications: serverNotif,
+              twoFactorAuth: server2FA,
+            })
+          );
+        }
+      } catch (e) {
+        console.warn("fetch settings failed", e);
+      }
+    };
+    fetchSettings();
+  }, [token]);
+
+  const writeToLocal = (notif: boolean, twoFA: boolean) => {
+    localStorage.setItem(
+      LS_KEY,
+      JSON.stringify({ notifications: notif, twoFactorAuth: twoFA })
+    );
+  };
+
   const handleNotificationToggle = async () => {
-    const updatedNotificationStatus = !notifications;
-    console.log("Toggling notification:", updatedNotificationStatus);
+    const next = !notifications;
 
     try {
-      const { response, error } = await apiHelper(
+      const { response } = await apiHelper(
         "POST",
         "common/toggle-notification",
-        { isNotification: updatedNotificationStatus }
+        { Authorization: `Bearer ${token}` },
+        { isNotification: next }
       );
-      console.log("API Response:", response);
 
       if (response && response.data.status === 1) {
-        setNotifications(updatedNotificationStatus); 
+        setNotifications(next);
+        writeToLocal(next, twoFactorAuth);
         toast.success(
-          response.data.message || "Notification preference updated successfully"
+          response.data.message || t("settings.notificationSuccess")
         );
       } else {
-        toast.error(
-          response?.message || "Failed to update notification preference"
-        );
+        toast.error(response?.data?.message || t("settings.notificationFail"));
       }
     } catch (err) {
       console.error("Error:", err);
-      toast.error(
-        "An error occurred while updating your notification preference."
-      );
+      toast.error(t("settings.notificationError"));
     }
   };
 
   const handleTwoFactorAuthToggle = async () => {
-    const updated2FAStatus = !twoFactorAuth;
-    console.log("Toggling 2FA:", updated2FAStatus); 
+    const next = !twoFactorAuth;
 
     try {
-      const { response, error } = await apiHelper(
+      const { response } = await apiHelper(
         "PATCH",
         "common/toggle-two-factor",
-        { is2FactorEnabled: updated2FAStatus }
+        { Authorization: `Bearer ${token}` },
+        { is2FactorEnabled: next }
       );
-      console.log("API Response:", response);
 
       if (response && response.data.status === 1) {
-        setTwoFactorAuth(updated2FAStatus);
-        toast.success(response.data.message || "2FA has been successfully updated");
+        setTwoFactorAuth(next);
+        writeToLocal(notifications, next);
+        toast.success(response.data.message || t("settings.twoFASuccess"));
       } else {
-        toast.error(response?.data.message || "Failed to update 2FA preference");
+        toast.error(response?.data?.message || t("settings.twoFAFail"));
       }
     } catch (err) {
       console.error("Error:", err);
-      toast.error("An error occurred while updating your 2FA preference.");
+      toast.error(t("settings.twoFAError"));
     }
   };
 
@@ -109,7 +150,7 @@ const SettingsPage = () => {
                         className="form-check-label"
                         htmlFor="notificationsSwitch"
                       >
-                        Notifications
+                        {t("settings.notifications")}
                       </label>
                       <input
                         className="form-check-input"
@@ -121,11 +162,12 @@ const SettingsPage = () => {
                     </div>
                   </button>
                 </li>
+
                 <li>
                   <button className="nav-link">
                     <div className="form-check form-switch">
                       <label className="form-check-label" htmlFor="authSwitch">
-                        2 Factor Authentication
+                        {t("settings.twoFactorAuth")}
                       </label>
                       <input
                         className="form-check-input"
@@ -137,19 +179,20 @@ const SettingsPage = () => {
                     </div>
                   </button>
                 </li>
+
                 <li className="nav-item" role="presentation">
                   <NavLink to="/language" className="nav-link">
-                    Language
+                    {t("settings.language")}
                   </NavLink>
                 </li>
                 <li className="nav-item" role="presentation">
                   <NavLink to="/privacy-policy" className="nav-link">
-                    Privacy Policy's
+                    {t("settings.privacyPolicy")}
                   </NavLink>
                 </li>
                 <li className="nav-item" role="presentation">
                   <NavLink to="/terms-conditions" className="nav-link">
-                    Terms &amp; Conditions
+                    {t("settings.termsConditions")}
                   </NavLink>
                 </li>
                 <li className="nav-item" role="presentation">
@@ -157,14 +200,15 @@ const SettingsPage = () => {
                     className="nav-link btn border-0 bg-transparent text-start w-100"
                     onClick={() => setShowModal(true)}
                   >
-                    Delete Account
+                    {t("settings.deleteAccount")}
                   </button>
                 </li>
                 <li className="nav-item" role="presentation">
                   <NavLink to="/block-list" className="nav-link">
-                    Block List
+                    {t("settings.blockList")}
                   </NavLink>
                 </li>
+
                 <DeleteAccountModal
                   show={showModal}
                   handleClose={() => setShowModal(false)}
