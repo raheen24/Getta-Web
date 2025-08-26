@@ -53,7 +53,7 @@
     "payDrivers": "Fahrer bezahlen",
     "income": "Einkommen",
     "transaction": "Transaktion",
-    "request": "Anfrage", 
+    "request": "Anfrage",
     "timeLog": "Zeitprotokoll",
     "disputes": "Streitigkeiten",
     "settings": "Einstellungen",
@@ -385,7 +385,13 @@
     "to": "Bis",
     "keywords": "Stichwörter",
     "datePlaceholder": "TT/MM/JJJJ",
-    "done": "Fertig"
+    "done": "Fertig",
+    "errors": {
+      "atLeastOneFilter": "Bitte wählen Sie mindestens einen Filter aus",
+      "endDateRequired": "Enddatum ist erforderlich",
+      "startDateRequired": "Startdatum ist erforderlich",
+      "invalidDateRange": "Das Startdatum darf nicht nach dem Enddatum liegen"
+    }
   },
   "trackingDetails": {
     "trackingDetails": "Verfolgungsdetails",

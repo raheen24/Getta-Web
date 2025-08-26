@@ -56,36 +56,43 @@ const TimeLog = () => {
     return path ? `${base}/${path.replace(/\\/g, "/")}` : profPic;
   };
 
-  const fetchDrivers = useCallback(async () => {
-    try {
-      const res = await apiHelper("GET", "vendor/get-time-logs", {}, null);
-      const data = res?.response?.data?.data;
+  const fetchDrivers = useCallback(
+    async (startDate?: string, endDate?: string) => {
+      try {
+        const queryParams = new URLSearchParams();
+        if (startDate) queryParams.append("startDate", startDate);
+        if (endDate) queryParams.append("endDate", endDate);
 
-      if (Array.isArray(data)) {
-        const formatted: DriverLog[] = data.map((driver: any) => {
-          const lastRideDate = driver.lastRideDate;
-          const isValidDate = lastRideDate && moment(lastRideDate).isValid();
-          return {
-            name: driver.driverName || "N/A",
-            image: driver.driverImage || "",
-            date: isValidDate
-              ? moment(lastRideDate).format("YYYY-MM-DD HH:mm")
-              : t("timeLog.noRidesCompleted"),
-            timeSpent: driver.totalRideTime || "0h 0m",
-          };
-        });
+        const res = await apiHelper("GET", `vendor/get-time-logs?${queryParams.toString()}`, {}, null);
+        const data = res?.response?.data?.data;
 
-        setDrivers(formatted);
-        setCurrentPage(1);
-      } else {
-        toast.error(t("timeLog.unexpectedResponseFormat"));
-        setDrivers([]);
+        if (Array.isArray(data)) {
+          const formatted: DriverLog[] = data.map((driver: any) => {
+            const lastRideDate = driver.lastRideDate;
+            const isValidDate = lastRideDate && moment(lastRideDate).isValid();
+            return {
+              name: driver.driverName || "N/A",
+              image: driver.driverImage || "",
+              date: isValidDate
+                ? moment(lastRideDate).format("YYYY-MM-DD HH:mm")
+                : t("timeLog.noRidesCompleted"),
+              timeSpent: driver.totalRideTime || "0h 0m",
+            };
+          });
+
+          setDrivers(formatted);
+          setCurrentPage(1);
+        } else {
+          toast.error(t("timeLog.unexpectedResponseFormat"));
+          setDrivers([]);
+        }
+      } catch (error) {
+        console.error("Error fetching driver logs:", error);
+        toast.error(t("timeLog.fetchError"));
       }
-    } catch (error) {
-      console.error("Error fetching driver logs:", error);
-      toast.error(t("timeLog.fetchError"));
-    }
-  }, [t]);
+    },
+    [t]
+  );
 
   useEffect(() => {
     fetchDrivers();
@@ -130,15 +137,25 @@ const TimeLog = () => {
         <NotificationModal
           show={showFilterModal}
           handleClose={() => setShowFilterModal(false)}
+          onApplyFilters={({ startDate, endDate, keyword }) => {
+            fetchDrivers(startDate, endDate);
+            setSearchTerm(keyword || "");
+          }}
         />
 
         <div className="table-responsive">
           <table className="table table-hover custom-driver-table">
             <thead className="thead">
               <tr>
-                <th className="header-cell text-start">{t("timeLog.driverName")}</th>
-                <th className="header-cell text-start">{t("timeLog.lastRideDate")}</th>
-                <th className="header-cell text-start">{t("timeLog.timeSpent")}</th>
+                <th className="header-cell text-start">
+                  {t("timeLog.driverName")}
+                </th>
+                <th className="header-cell text-start">
+                  {t("timeLog.lastRideDate")}
+                </th>
+                <th className="header-cell text-start">
+                  {t("timeLog.timeSpent")}
+                </th>
               </tr>
             </thead>
             <tbody>

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import GlobalBtn from "./GlobalBtn";
 import { ListGroup } from "react-bootstrap";
 import Header from "./Header";
@@ -12,24 +12,23 @@ const Payment: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { driverId } = useParams();
+  const location = useLocation();
+
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [paymentDetails, setPaymentDetails] = useState<any>(null);
+  const driverFromState = location.state?.driver;
+
 
   const goBack = () => {
     navigate(-1);
   };
-
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 1200) {
-        setSidebarOpen(false);
-      } else {
-        setSidebarOpen(true);
-      }
+      setSidebarOpen(window.innerWidth > 1200);
     };
     window.addEventListener("resize", handleResize);
     handleResize();
@@ -43,7 +42,6 @@ const Payment: React.FC = () => {
         "GET",
         `vendor/get-payment-detail/${driverId}`
       );
-
       if (response?.data?.status === 1) {
         setPaymentDetails(response.data.data);
       } else {
@@ -59,6 +57,11 @@ const Payment: React.FC = () => {
     fetchPaymentDetails();
   }, [driverId]);
 
+  const driverName =
+    driverFromState?.name || paymentDetails?.driver?.fullName || "N/A";
+
+  const totalRides =
+    driverFromState?.rides ?? paymentDetails?.totalUnpaidRides ?? "N/A";
   const {
     totalUnpaidRides,
     totalFare,
@@ -75,11 +78,10 @@ const Payment: React.FC = () => {
         payments[0].rideId.endTime
       ).toLocaleDateString()}`
     : t("payment.noDataAvailable");
+
   const vinNumber =
     vehicle?.vehicleIdentificationNumber || t("payment.noDataAvailable");
   const carType = vehicle?.carType || t("payment.noDataAvailable");
-  const driverName =
-    payments?.[0]?.driverId?.fullName || t("payment.noDataAvailable");
 
   return (
     <div
@@ -95,6 +97,7 @@ const Payment: React.FC = () => {
         headingText={t("payment.payment")}
       />
       <Aside isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+
       <div className="content_section">
         <div className="charges-sec">
           <h5 className="text-center fw-bold colorofall">
@@ -107,11 +110,11 @@ const Payment: React.FC = () => {
                   {t("payment.date")}: {dateRange}
                 </div>
                 <div className="d-flex align-items-center fw-bold">
-                  {t("payment.totalRides")}:{" "}
-                  {totalUnpaidRides || t("payment.noDataAvailable")}
+                  {t("payment.totalRides")}: {totalRides}
                 </div>
               </div>
             </ListGroup.Item>
+
             <ListGroup.Item className="border-0">
               <div className="justify-content-between d-flex">
                 <div className="d-flex align-items-center fw-bold">
@@ -122,6 +125,7 @@ const Payment: React.FC = () => {
                 </div>
               </div>
             </ListGroup.Item>
+
             <div className="border-bottom my-3"></div>
             <ListGroup.Item className="border-0">
               <div className="justify-content-between d-flex fw-bold">
@@ -129,7 +133,6 @@ const Payment: React.FC = () => {
               </div>
             </ListGroup.Item>
             <div className="border-bottom my-3"></div>
-
             <ListGroup.Item className="border-0">
               <div className="justify-content-between d-flex fw-bold">
                 <strong>{t("payment.totalRidesCost")}</strong> $
@@ -149,7 +152,6 @@ const Payment: React.FC = () => {
               </div>
             </ListGroup.Item>
             <div className="border-bottom my-3"></div>
-
             <ListGroup.Item className="border-0">
               <div className="justify-content-between d-flex fw-bold">
                 <strong>{t("payment.totalCost")}</strong> $
@@ -157,7 +159,6 @@ const Payment: React.FC = () => {
               </div>
             </ListGroup.Item>
           </ListGroup>
-
           <div className="d-flex justify-content-center">
             <GlobalBtn
               text={t("payment.payNow")}

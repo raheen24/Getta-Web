@@ -53,16 +53,24 @@ const DriversTable: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const fetchDrivers = async () => {
+  const fetchDrivers = async (startDate?: string, endDate?: string) => {
     try {
-      const { response } = await apiHelper("GET", "vendor/get-drivers");
+      const queryParams = new URLSearchParams();
+      if (startDate) queryParams.append("startDate", startDate);
+      if (endDate) queryParams.append("endDate", endDate);
+
+      const { response } = await apiHelper(
+        "GET",
+        `vendor/get-drivers?${queryParams.toString()}`
+      );
+
       if (response?.data?.status === 1) {
         const mappedDrivers: Driver[] = response.data.data.map((item: any) => {
           const driver = item.driver || {};
           return {
             _id: driver._id,
             name: driver.fullName || "N/A",
-            phoneNumber: driver.phoneNumber||"N/A",
+            phoneNumber: driver.phoneNumber || "N/A",
             car: item.vehicle?.carType || "N/A",
             vin: item.vehicle?.vehicleIdentificationNumber || "N/A",
             payment: driver.isPayment
@@ -71,12 +79,12 @@ const DriversTable: React.FC = () => {
             rating: driver.averageRating ?? "N/A",
             rides: driver.totalRides || 0,
             status: driver.isBlocked
-              ? t("drivers.blocked")
+              ? "Blocked"
               : driver.isRide
-              ? t("drivers.online")
-              : t("drivers.offline"),
+              ? "Online"
+              : "Offline",
             image: driver.image || null,
-            rawData: item, // 👈 send the complete backend response as well
+            rawData: item, 
           };
         });
 
@@ -99,7 +107,6 @@ const DriversTable: React.FC = () => {
   const filteredDrivers = drivers.filter((d) =>
     d.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
   const totalPages = Math.ceil(filteredDrivers.length / itemsPerPage);
 
   const paginatedDrivers = filteredDrivers.slice(
@@ -115,7 +122,7 @@ const DriversTable: React.FC = () => {
 
     if (target.closest(".track-btn")) {
       navigate(`/tracking-details?driverId=${driver._id}`, {
-        state: { driver: driver.rawData }, // 👈 send rawData to details screen
+        state: { driver: driver.rawData }, 
       });
       return;
     }
@@ -220,6 +227,10 @@ const DriversTable: React.FC = () => {
           <NotificationModal
             show={showFilterModal}
             handleClose={() => setShowFilterModal(false)}
+            onApplyFilters={({ startDate, endDate, keyword }) => {
+              fetchDrivers(startDate, endDate); 
+              setSearchTerm(keyword || "");
+            }}
           />
         </div>
 

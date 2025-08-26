@@ -35,7 +35,7 @@
     "restaurant": "Restaurant",
     "payDrivers": "Payer les Chauffeurs",
     "income": "Revenus",
-    "request": "Demande" ,
+    "request": "Demande",
     "transaction": "Transaction",
     "timeLog": "Journal des Heures",
     "disputes": "Litiges",
@@ -470,7 +470,13 @@
     "to": "À",
     "keywords": "Mots-clés",
     "datePlaceholder": "JJ/MM/AAAA",
-    "done": "Terminé"
+    "done": "Terminé",
+    "errors": {
+      "atLeastOneFilter": "Veuillez sélectionner au moins un filtre",
+      "endDateRequired": "La date de fin est obligatoire",
+      "startDateRequired": "La date de début est obligatoire",
+      "invalidDateRange": "La date de début ne peut pas être postérieure à la date de fin"
+    }
   },
   "trackingDetails": {
     "trackingDetails": "Détails du suivi",

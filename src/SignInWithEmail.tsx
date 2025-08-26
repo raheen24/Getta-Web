@@ -32,7 +32,6 @@ const SignInWithEmail: React.FC = () => {
       toast.error(t("validation.invalidEmail"));
       return;
     }
-
     setLoading(true);
 
     const requestBody = {

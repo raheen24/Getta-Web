@@ -488,7 +488,13 @@
     "to": "To",
     "keywords": "Keywords",
     "datePlaceholder": "DD/MM/YYYY",
-    "done": "Done"
+    "done": "Done",
+    "errors": {
+      "atLeastOneFilter": "Please select at least one filter",
+      "endDateRequired": "End Date is required",
+      "startDateRequired": "Start Date is required",
+      "invalidDateRange": "Start Date cannot be after End Date"
+    }
   },
   "trackingDetails": {
     "trackingDetails": "Tracking Details",

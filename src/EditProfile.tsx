@@ -64,12 +64,12 @@ const EditProfile: React.FC = () => {
           setBusinessLicense(data.businessLicense || "");
           setTaxIdentificationNumber(data.taxIdentificationNumber || "");
           if (data.image) {
-            setPreviewImage(getFullImageUrl(data.image)); // Display the current profile image
+            setPreviewImage(getFullImageUrl(data.image));
           }
 
           // Set existing documents if available
           if (data.taxIdentificationNumberFiles?.length > 0) {
-            setExistingFiles(data.taxIdentificationNumberFiles); // Display previously uploaded documents
+            setExistingFiles(data.taxIdentificationNumberFiles); 
           }
         } else {
           toast.error(error || "Failed to fetch profile data");

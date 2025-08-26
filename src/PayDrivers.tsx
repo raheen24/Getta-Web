@@ -16,6 +16,8 @@ const PayDrives = () => {
   const [drivers, setDrivers] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
+  const [showFilterModal, setShowFilterModal] = useState<boolean>(false);
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
   const { t } = useTranslation();
@@ -38,9 +40,15 @@ const PayDrives = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const fetchDrivers = async () => {
+  const fetchDrivers = async (startDate?: string, endDate?: string) => {
     try {
-      const { response } = await apiHelper("GET", "vendor/get-payments-detail");
+      const queryParams = new URLSearchParams();
+      if (startDate) queryParams.append("startDate", startDate);
+      if (endDate) queryParams.append("endDate", endDate);
+      const { response } = await apiHelper(
+        "GET",
+        `vendor/get-payments-detail?${queryParams.toString()}`
+      );
 
       if (response?.data?.status === 1) {
         const mappedDrivers = response.data.data.map((item: any) => {
@@ -114,22 +122,26 @@ const PayDrives = () => {
                   value={searchTerm}
                   onChange={(e) => {
                     setSearchTerm(e.target.value);
-                    setCurrentPage(1); // Reset to first page on search
+                    setCurrentPage(1);
                   }}
                 />
                 <FaSearch />
               </div>
 
-              <div className="search-filter ms-2">
-                <a onClick={() => setShowModal(true)} role="button">
-                  <img src={FillterIcon} alt="Filter" />
+              <div className="search-filter">
+                <a onClick={() => setShowFilterModal(true)}>
+                  <img src={FillterIcon} alt="filter" />
                 </a>
               </div>
             </div>
           </div>
           <NotificationModal
-            show={showModal}
-            handleClose={() => setShowModal(false)}
+            show={showFilterModal}
+            handleClose={() => setShowFilterModal(false)}
+            onApplyFilters={({ startDate, endDate, keyword }) => {
+              fetchDrivers(startDate, endDate);
+              setSearchTerm(keyword || "");
+            }}
           />
         </div>
         <hr style={{ borderTop: "1px solid #000" }} />
@@ -183,12 +195,14 @@ const PayDrives = () => {
                       className="cursor-pointer"
                       style={{
                         color: driver.payment === "Paid" ? "green" : "red",
-                        cursor: "pointer",
                       }}
                       onClick={() =>
-                        driver.payment === "Paid"
-                          ? navigate(`/paid-details/${driver._id}`)
-                          : navigate(`/payment/${driver._id}`)
+                        navigate(
+                          driver.payment === "Paid"
+                            ? `/paid-details/${driver._id}`
+                            : `/payment/${driver._id}`,
+                          { state: { driver } }
+                        )
                       }
                     >
                       <p className="colorofall td_date mb-0">

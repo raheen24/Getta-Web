@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import { useTranslation } from "react-i18next";
 
 interface Driver {
+  id: string;
   img: string;
   name: string;
   from: string;
@@ -24,29 +25,25 @@ const PaymentTransfer = () => {
   const [pending, setPending] = useState<Driver[]>([]);
   const [activeTab, setActiveTab] = useState("completed");
 
+  const navigate = useNavigate();
+
   const toggleSidebar = () => {
     setSidebarOpen(!isSidebarOpen);
   };
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 1200) {
-        setSidebarOpen(false);
-      } else {
-        setSidebarOpen(true);
-      }
+      if (window.innerWidth <= 1200) setSidebarOpen(false);
+      else setSidebarOpen(true);
     };
     window.addEventListener("resize", handleResize);
     handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const navigate = useNavigate();
-
   const fetchBalance = async () => {
     try {
       const { response } = await apiHelper("GET", `vendor/get-balance`);
-
       if (response?.data?.status === 1) {
         setBalance(response.data.data.balance);
       } else {
@@ -67,18 +64,15 @@ const PaymentTransfer = () => {
 
       if (response?.data?.status === 1) {
         const payments = response.data.data.payments.map((payment: any) => ({
+          id: payment.driverId._id,
           img: profPic,
           name: payment.driverId.email,
           from: new Date(payment.rideId.createdAt).toLocaleDateString(),
           to: new Date(payment.driverPaidDate).toLocaleDateString(),
           amount: `$${payment.amount.toFixed(2)}`,
         }));
-
-        if (status === "completed") {
-          setCompleted(payments);
-        } else {
-          setPending(payments);
-        }
+        if (status === "completed") setCompleted(payments);
+        else setPending(payments);
       } else {
         toast.error(response?.data?.message || t("paymentTransfer.fetchError"));
       }
@@ -95,7 +89,14 @@ const PaymentTransfer = () => {
   }, []);
 
   const handlePaymentTransfer = () => {
-    navigate("/payment-transfer-acc");
+    if (!pending[0]) {
+      toast.error("No driver available for transfer");
+      return;
+    }
+
+    navigate("/payment-transfer-acc", {
+      state: { selectedDriver: { id: pending[0].id, name: pending[0].name } },
+    });
   };
 
   const renderList = (list: Driver[]) =>
@@ -121,7 +122,7 @@ const PaymentTransfer = () => {
             <span className="colorofall small income-name">
               {t("paymentTransfer.from")}
             </span>
-            <span className="colorofall mb-0 income-name fs-7  text-start">
+            <span className="colorofall mb-0 income-name fs-7 text-start">
               {driver.from}
             </span>
           </div>
@@ -132,13 +133,13 @@ const PaymentTransfer = () => {
             <span className="colorofall small income-name">
               {t("paymentTransfer.to")}
             </span>
-            <span className="colorofall mb-0 income-name fs-7  text-start">
+            <span className="colorofall mb-0 income-name fs-7 text-start">
               {driver.to}
             </span>
           </div>
         </div>
 
-        <div className="text-center " style={{ width: "10%" }}>
+        <div className="text-center" style={{ width: "10%" }}>
           <p className="colorofall td_date mb-0 fs-6 fw-semibold">
             {driver.amount}
           </p>
@@ -155,8 +156,8 @@ const PaymentTransfer = () => {
       <Header
         isSidebarOpen={isSidebarOpen}
         toggleSidebar={toggleSidebar}
-        showBackButton={true}
-        showHeading={true}
+        showBackButton
+        showHeading
         headingText={t("paymentTransfer.payment")}
       />
       <Aside isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />

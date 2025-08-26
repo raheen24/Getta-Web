@@ -39,7 +39,7 @@ const DriverHistory = () => {
     image?: string;
   }>({ name: "", image: "" });
   const [currentPage, setCurrentPage] = useState(1);
-  const [loading, setLoading] = useState(true); // Loading state
+  const [loading, setLoading] = useState(true);
   const itemsPerPage = 10;
   const navigate = useNavigate();
 
@@ -56,74 +56,86 @@ const DriverHistory = () => {
     }
   };
 
-  // Update month and current date based on selectedDate
   useEffect(() => {
     setMonth(
       selectedDate.toLocaleString("default", { month: "long", year: "numeric" })
     );
     setCurrentDate(selectedDate.getDate().toString().padStart(2, "0"));
   }, [selectedDate]);
+  const formatDate = (dateStr?: string) => {
+    if (!dateStr) return "";
+    const date = new Date(dateStr);
+    if (isNaN(date.getTime())) return "";
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
 
-  // Fetch driver history when driverId changes
-  useEffect(() => {
-    const fetchDriverHistory = async () => {
-      setLoading(true); // Start loading
-      try {
-        const { response } = await apiHelper(
-          "GET",
-          `/vendor/get-driver-history/${driverId}`
-        );
-        if (response?.data?.status === 1) {
-          const rawData = response.data.data;
+  const fetchDriverHistory = async (startDate?: string, endDate?: string) => {
+    setLoading(true);
+    try {
+      const queryParams = new URLSearchParams();
 
-          if (rawData.length > 0 && rawData[0].driverId) {
-            const driver = rawData[0].driverId;
-            setDriverProfile({
-              name: driver.fullName || "N/A",
-              image: driver.image || "",
-            });
-          }
+      const formattedStart = formatDate(startDate);
+      const formattedEnd = formatDate(endDate);
 
-          const historyData: DriverHistory[] = rawData.map((history: any) => ({
-            userName: history.userId?.fullName || "N/A",
-            userImage: history.userId?.image || null,
-            pickupLocation: history.pickUpLocation?.address || "N/A",
-            dropOffLocation: history.dropOffLocation?.address || "N/A",
-            cost: history.fare ? `$${history.fare.toFixed(2)}` : "$0.00",
-            date: history.startTime
-              ? new Date(history.startTime).toLocaleString()
-              : "N/A",
-            status: history.status || t("driverHistory.pending"),
-            bookingStatus: history.isCancelled
-              ? t("driverHistory.cancelled")
-              : history.status || t("driverHistory.pending"),
-            _id: history._id,
-          }));
+      if (formattedStart) queryParams.append("startDate", formattedStart);
+      if (formattedEnd) queryParams.append("endDate", formattedEnd);
 
-          setDriverHistory(historyData);
-          setCurrentPage(1); // Reset to first page
-        } else {
-          console.error(
-            "Error fetching driver history",
-            response?.data?.message
-          );
+      const { response } = await apiHelper(
+        "GET",
+        `/vendor/get-driver-history/${driverId}?${queryParams.toString()}`
+      );
+
+      if (response?.data?.status === 1) {
+        const rawData = response.data.data;
+
+        if (rawData.length > 0 && rawData[0].driverId) {
+          const driver = rawData[0].driverId;
+          setDriverProfile({
+            name: driver.fullName || "N/A",
+            image: driver.image || "",
+          });
         }
-      } catch (error) {
-        console.error("Error fetching driver history", error);
-      } finally {
-        setLoading(false); // End loading
-      }
-    };
 
+        const historyData: DriverHistory[] = rawData.map((history: any) => ({
+          userName: history.userId?.fullName || "N/A",
+          userImage: history.userId?.image || null,
+          pickupLocation: history.pickUpLocation?.address || "N/A",
+          dropOffLocation: history.dropOffLocation?.address || "N/A",
+          cost: history.fare ? `$${history.fare.toFixed(2)}` : "$0.00",
+          date: history.startTime
+            ? new Date(history.startTime).toLocaleString()
+            : "N/A",
+          status: history.status || t("driverHistory.pending"),
+          bookingStatus: history.isCancelled
+            ? t("driverHistory.cancelled")
+            : history.status || t("driverHistory.pending"),
+          _id: history._id,
+        }));
+
+        setDriverHistory(historyData);
+        setCurrentPage(1);
+      } else {
+        console.error("Error fetching driver history", response?.data?.message);
+      }
+    } catch (error) {
+      console.error("Error fetching driver history", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     if (driverId) {
-      fetchDriverHistory();
+      fetchDriverHistory(); 
     }
   }, [driverId]);
 
   const filteredHistory = driverHistory.filter((h) =>
     h.userName.toLowerCase().includes(searchTerm.toLowerCase())
   );
-
   const totalPages = Math.ceil(filteredHistory.length / itemsPerPage);
 
   const paginatedHistory = filteredHistory.slice(
@@ -132,12 +144,55 @@ const DriverHistory = () => {
   );
 
   const handleNext = () => {
-    setSelectedDate((prev) => new Date(prev.getTime() + 86400000));
+    setSelectedDate((prev) => {
+      const nextMonth = new Date(prev.getFullYear(), prev.getMonth() + 1, 1);
+      const startDate = new Date(
+        nextMonth.getFullYear(),
+        nextMonth.getMonth(),
+        1
+      );
+      const endDate = new Date(
+        nextMonth.getFullYear(),
+        nextMonth.getMonth() + 1,
+        0
+      );
+      fetchDriverHistory(startDate.toISOString(), endDate.toISOString());
+      return nextMonth;
+    });
   };
 
   const handlePrev = () => {
-    setSelectedDate((prev) => new Date(prev.getTime() - 86400000));
+    setSelectedDate((prev) => {
+      const prevMonth = new Date(prev.getFullYear(), prev.getMonth() - 1, 1);
+      const startDate = new Date(
+        prevMonth.getFullYear(),
+        prevMonth.getMonth(),
+        1
+      );
+      const endDate = new Date(
+        prevMonth.getFullYear(),
+        prevMonth.getMonth() + 1,
+        0
+      );
+      fetchDriverHistory(startDate.toISOString(), endDate.toISOString());
+      return prevMonth;
+    });
   };
+  useEffect(() => {
+    if (driverId) {
+      const startDate = new Date(
+        selectedDate.getFullYear(),
+        selectedDate.getMonth(),
+        1
+      );
+      const endDate = new Date(
+        selectedDate.getFullYear(),
+        selectedDate.getMonth() + 1,
+        0
+      );
+      fetchDriverHistory(startDate.toISOString(), endDate.toISOString());
+    }
+  }, [driverId]);
 
   const handlePageClick = (page: number) => {
     if (page >= 1 && page <= totalPages) {
@@ -162,26 +217,29 @@ const DriverHistory = () => {
       <section className="content_section">
         <div className="d-flex justify-content-end align-items-center mb-4">
           <div className="d-flex w-100 justify-content-between align-items-center mb-3">
-            <div className="d-flex track-btn2">
-              <img
-                src={driverProfile.image ? `/${driverProfile.image}` : profPic}
-                alt="Driver"
-                className="rounded-circle me-2"
-                width="40"
-                height="40"
-              />
-              <p className="colorofall td_date mb-0 fw-bold fs-5">
-                {driverProfile.name}
-              </p>
-            </div>
-
-            <div></div>
-            <div className="d-flex align-items-center gap-2">
+            <div className="d-flex flex-wrap align-items-center gap-2">
+              <div className="d-flex track-btn2">
+                <img
+                  src={
+                    driverProfile.image ? `/${driverProfile.image}` : profPic
+                  }
+                  alt="Driver"
+                  className="rounded-circle me-2"
+                  width="40"
+                  height="40"
+                />
+                <p className="colorofall td_date mb-0 fw-bold fs-5">
+                  {driverProfile.name}
+                </p>
+              </div>
               <MonthNavigator
                 currentMonth={`${month} - ${currentDate}`}
                 onPrev={handlePrev}
                 onNext={handleNext}
               />
+            </div>
+
+            <div className="d-flex align-items-center gap-2">
               <div className="filters d_flex">
                 <div className="searchField">
                   <input
@@ -203,6 +261,10 @@ const DriverHistory = () => {
                 <NotificationModal
                   show={showFilterModal}
                   handleClose={() => setShowFilterModal(false)}
+                  onApplyFilters={({ startDate, endDate, keyword }) => {
+                    fetchDriverHistory(startDate, endDate);
+                    setSearchTerm(keyword || "");
+                  }}
                 />
               </div>
             </div>

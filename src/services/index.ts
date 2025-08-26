@@ -7,13 +7,11 @@ import axios, {
 import { store } from "../redux/index";
 import { setLogout } from "../redux/slice/userSlice";
 
-// Create Axios instance
 const instance = axios.create({
   baseURL: "https://client1.appsstaging.com:3017/api/v1/",
   timeout: 20000,
 });
 
-// Request interceptor
 instance.interceptors.request.use(
   (config: AxiosRequestConfig) => {
     const token = store.getState().user.token;

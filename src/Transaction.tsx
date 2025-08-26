@@ -10,50 +10,59 @@ import { apiHelper } from "../src/services/index";
 import { toast } from "react-toastify";
 import incomeArrowDown from "./assets/images/income-arrow-down.png";
 import { useTranslation } from "react-i18next";
+import profPic from "./assets/images/profpic.png";
 
-const Transaction = () => {
+interface Transaction {
+  _id: string;
+  driver: {
+    _id: string;
+    fullName: string;
+    image?: string;
+  };
+  createdAt: string;
+  updatedAt: string;
+  driverShare: number;
+}
+
+const Transactions: React.FC = () => {
   const { t } = useTranslation();
   const [isSidebarOpen, setSidebarOpen] = useState(true);
-  const [transactions, setTransactions] = useState([]);
-  const [showModal, setShowModal] = useState(false);
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [showFilterModal, setShowFilterModal] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
-  const [pagination, setPagination] = useState({
-    total: 0,
-    page: 1,
-    limit: 10,
-    pages: 1,
-  });
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
   const navigate = useNavigate();
 
-  const toggleSidebar = () => {
-    setSidebarOpen(!isSidebarOpen);
-  };
+  const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
   useEffect(() => {
     const handleResize = () => {
-      if (window.innerWidth <= 1200) {
-        setSidebarOpen(false);
-      } else {
-        setSidebarOpen(true);
-      }
+      setSidebarOpen(window.innerWidth > 1200);
     };
     window.addEventListener("resize", handleResize);
     handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const fetchTransactions = async (page = 1) => {
+  const fetchTransactions = async (
+    startDate?: string,
+    endDate?: string,
+    keyword?: string
+  ) => {
     try {
+      const queryParams = new URLSearchParams();
+      if (startDate) queryParams.append("startDate", startDate);
+      if (endDate) queryParams.append("endDate", endDate);
+      if (keyword) queryParams.append("keyword", keyword);
+
       const { response } = await apiHelper(
         "GET",
-        `vendor/get-transactions?page=${page}`
+        `vendor/get-transactions?${queryParams.toString()}&page=${currentPage}`
       );
 
       if (response?.data?.status === 1) {
-        const transactionData = response.data.data.transactions;
-        const paginationData = response.data.data.pagination;
-        setTransactions(transactionData);
-        setPagination(paginationData);
+        setTransactions(response.data.data.transactions);
       } else {
         toast.error(response?.data?.message || t("transaction.fetchError"));
         setTransactions([]);
@@ -66,24 +75,21 @@ const Transaction = () => {
   };
 
   useEffect(() => {
-    fetchTransactions(pagination.page);
-  }, [pagination.page]);
+    fetchTransactions();
+  }, [currentPage]);
 
-  const filteredTransactions = transactions.filter((transaction) =>
-    transaction.driver.fullName.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredTransactions = transactions.filter((t) =>
+    t.driver.fullName.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const totalPages = Math.ceil(filteredTransactions.length / pagination.limit);
-
+  const totalPages = Math.ceil(filteredTransactions.length / itemsPerPage);
   const paginatedTransactions = filteredTransactions.slice(
-    (pagination.page - 1) * pagination.limit,
-    pagination.page * pagination.limit
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
   );
 
   const handlePageClick = (page: number) => {
-    if (page >= 1 && page <= totalPages) {
-      setPagination((prev) => ({ ...prev, page }));
-    }
+    if (page >= 1 && page <= totalPages) setCurrentPage(page);
   };
 
   return (
@@ -94,6 +100,7 @@ const Transaction = () => {
     >
       <Header isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
       <Aside isSidebarOpen={isSidebarOpen} toggleSidebar={toggleSidebar} />
+
       <div className="content_section">
         <div className="d-flex w-100 justify-content-between align-items-center mb-3">
           <div>
@@ -112,19 +119,24 @@ const Transaction = () => {
                 value={searchTerm}
                 onChange={(e) => {
                   setSearchTerm(e.target.value);
-                  setPagination((prev) => ({ ...prev, page: 1 }));
+                  setCurrentPage(1);
                 }}
               />
               <FaSearch />
             </div>
             <div className="search-filter">
-              <a onClick={() => setShowModal(true)}>
+              <a onClick={() => setShowFilterModal(true)}>
                 <img src={FillterIcon} alt="filter" />
               </a>
             </div>
             <NotificationModal
-              show={showModal}
-              handleClose={() => setShowModal(false)}
+              show={showFilterModal}
+              handleClose={() => setShowFilterModal(false)}
+              onApplyFilters={({ startDate, endDate, keyword }) => {
+                fetchTransactions(startDate, endDate, keyword);
+                setSearchTerm(keyword || "");
+                setCurrentPage(1);
+              }}
             />
           </div>
         </div>
@@ -142,11 +154,7 @@ const Transaction = () => {
             <tbody>
               {paginatedTransactions.length > 0 ? (
                 paginatedTransactions.map((transaction) => (
-                  <tr
-                    key={transaction._id}
-                    className="driver-row"
-                    style={{ cursor: "pointer" }}
-                  >
+                  <tr key={transaction._id} style={{ cursor: "pointer" }}>
                     <td>
                       <div className="d-flex track-btn2">
                         <img
@@ -162,14 +170,10 @@ const Transaction = () => {
                       </div>
                     </td>
                     <td>
-                      <span className="colorofall mb-0 income-name">
-                        {new Date(transaction.createdAt).toLocaleDateString()}
-                      </span>
+                      {new Date(transaction.createdAt).toLocaleDateString()}
                     </td>
                     <td>
-                      <span className="colorofall mb-0 income-name">
-                        {new Date(transaction.updatedAt).toLocaleDateString()}
-                      </span>
+                      {new Date(transaction.updatedAt).toLocaleDateString()}
                     </td>
                     <td>
                       <p className="colorofall td_date mb-0 fs-4 fw-bold">
@@ -187,33 +191,34 @@ const Transaction = () => {
                 ))
               ) : (
                 <tr>
-                  <td colSpan="4" className="text-center text-muted py-4">
+                  <td colSpan={4} className="text-center text-muted py-4">
                     {t("transaction.noTransactionsFound")}
                   </td>
                 </tr>
               )}
             </tbody>
           </table>
-        </div>
 
-        <div className="d-flex justify-content-between align-items-center mt-3 px-3">
-          <button
-            className="btn btn-secondary"
-            onClick={() => handlePageClick(pagination.page - 1)}
-            disabled={pagination.page === 1}
-          >
-            {t("transaction.previous")}
-          </button>
-          <span className="text-white">
-            {t("transaction.pageOf", { page: pagination.page, totalPages })}
-          </span>
-          <button
-            className="btn btn-secondary"
-            onClick={() => handlePageClick(pagination.page + 1)}
-            disabled={pagination.page === totalPages}
-          >
-            {t("transaction.next")}
-          </button>
+          {/* Pagination */}
+          <div className="d-flex justify-content-between align-items-center mt-3 px-3">
+            <button
+              className="btn btn-secondary"
+              onClick={() => handlePageClick(currentPage - 1)}
+              disabled={currentPage === 1}
+            >
+              {t("transaction.previous")}
+            </button>
+            <span className="text-white">
+              {t("transaction.pageOf", { page: currentPage, totalPages })}
+            </span>
+            <button
+              className="btn btn-secondary"
+              onClick={() => handlePageClick(currentPage + 1)}
+              disabled={currentPage === totalPages}
+            >
+              {t("transaction.next")}
+            </button>
+          </div>
         </div>
       </div>
       <Footer />
@@ -221,4 +226,4 @@ const Transaction = () => {
   );
 };
 
-export default Transaction;
+export default Transactions;
