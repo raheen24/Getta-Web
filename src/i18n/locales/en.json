@@ -148,7 +148,9 @@
     "login": "Login",
     "register": "Register",
     "terms": "Terms & Conditions",
-    "privacy": "Privacy & Policy"
+    "privacy": "Privacy & Policy",
+    "otpExpired": "Your OTP has expired. Please request a new one.",
+    "invalidOtp": "Invalid OTP. Please try again."
   },
   "profile": {
     "editProfile": "Edit Profile",
@@ -598,7 +600,9 @@
     "loading": "Loading...",
     "noData": "No data available",
     "noResults": "No results found",
-    "somethingWentWrong": "Something went wrong. Please try again."
+    "somethingWentWrong": "Something went wrong. Please try again.",
+    "otpExpired": "Your OTP has expired. Please request a new one.",
+    "invalidOtp": "Invalid OTP. Please try again."
   },
   "disputes": {
     "resolved": "Resolved",
