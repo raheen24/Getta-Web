@@ -150,7 +150,7 @@
     "terms": "Terms & Conditions",
     "privacy": "Privacy & Policy",
     "otpExpired": "Your OTP has expired. Please request a new one.",
-    "invalidOtp": "Invalid OTP. Please try again."
+    "invalidOtp": "Invalid OTP verification code."
   },
   "profile": {
     "editProfile": "Edit Profile",

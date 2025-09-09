@@ -50,7 +50,7 @@ const OTPVerification: React.FC = () => {
     if (isAllEmpty) {
       toast.warning(
         t("common.fieldsCantBeEmpty", {
-          defaultValue: "These fields can't be empty",
+          defaultValue: "OTP field can't be empty",
         })
       );
       document.getElementById("digit-1")?.focus();
@@ -59,7 +59,7 @@ const OTPVerification: React.FC = () => {
     if (isAnyEmpty) {
       toast.error(
         t("common.fieldsCantBeEmpty", {
-          defaultValue: "These fields can't be empty",
+          defaultValue: "OTP field can't be empty",
         })
       );
       const firstEmpty = otp.findIndex((d) => d.trim() === "");

@@ -62,7 +62,7 @@ const CreateProfile: React.FC = () => {
       setProfileImage(file);
       const url = URL.createObjectURL(file);
       setPreviewImage(url);
-      toast.success("Profile picture updated successfully.");
+      toast.success("Profile picture uploaded successfully.");
     }
   };
 
@@ -70,7 +70,7 @@ const CreateProfile: React.FC = () => {
     const newFiles = Array.from(e.target.files || []);
     if (newFiles.length > 0) {
       setSelectedFiles((prev) => [...prev, ...newFiles]);
-      toast.success("Attachment uploaded successfully.");
+      toast.success("Uploaded Attachment");
     }
   };
 

@@ -31,22 +31,31 @@ const NotificationModal: React.FC<NotificationModalProps> = ({
   };
 
   const handleApply = () => {
-    // ✅ At least one filter required
+    console.log("✅ handleApply called", { startDate, endDate, keyword });
     if (!startDate && !endDate && !keyword.trim()) {
-      toast.error(t("notifications.errors.atLeastOneFilter"));
+      toast.error(
+        t("notifications.errors.atLeastOneFilter") ||
+          "Please select at least one filter"
+      );
       return;
     }
 
     if (startDate && !endDate) {
-      toast.error(t("notifications.errors.endDateRequired"));
+      toast.error(
+        t("notifications.errors.endDateRequired") || "End date is required"
+      );
       return;
     }
     if (!startDate && endDate) {
-      toast.error(t("notifications.errors.startDateRequired"));
+      toast.error(
+        t("notifications.errors.startDateRequired") || "Start date is required"
+      );
       return;
     }
     if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
-      toast.error(t("notifications.errors.invalidDateRange"));
+      toast.error(
+        t("notifications.errors.invalidDateRange") || "Invalid date range"
+      );
       return;
     }
 
