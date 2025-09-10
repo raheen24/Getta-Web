@@ -40,11 +40,52 @@ const PayDrives = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+  // const fetchDrivers = async (startDate?: string, endDate?: string) => {
+  //   try {
+  //     const queryParams = new URLSearchParams();
+  //     if (startDate) queryParams.append("startDate", startDate);
+  //     if (endDate) queryParams.append("endDate", endDate);
+  //     const { response } = await apiHelper(
+  //       "GET",
+  //       `vendor/get-payments-detail?${queryParams.toString()}`
+  //     );
+
+  //     if (response?.data?.status === 1) {
+  //       const mappedDrivers = response.data.data.map((item: any) => {
+  //         const driver = item.driver || {};
+  //         return {
+  //           _id: driver._id,
+  //           name: driver.fullName || "N/A",
+  //           car: item.vehicle?.carType || "N/A",
+  //           vin: item.vehicle?.vehicleIdentificationNumber || "N/A",
+  //           payment: item.paymentStatus || "N/A",
+  //           rating: driver.averageReview ?? "N/A",
+  //           rides: item.totalCompletedRides || 0,
+  //           status: driver.isBlocked
+  //             ? "Blocked"
+  //             : driver.isRide
+  //             ? "Online"
+  //             : "Offline",
+  //           image: driver.image || profPic,
+  //         };
+  //       });
+  //       setDrivers(mappedDrivers);
+  //     } else {
+  //       toast.error(response?.data?.message || "Failed to fetch drivers.");
+  //       setDrivers([]);
+  //     }
+  //   } catch (err) {
+  //     toast.error("Something went wrong while fetching drivers.");
+  //     console.error("Fetch error:", err);
+  //     setDrivers([]);
+  //   }
+  // };
   const fetchDrivers = async (startDate?: string, endDate?: string) => {
     try {
       const queryParams = new URLSearchParams();
       if (startDate) queryParams.append("startDate", startDate);
       if (endDate) queryParams.append("endDate", endDate);
+
       const { response } = await apiHelper(
         "GET",
         `vendor/get-payments-detail?${queryParams.toString()}`
@@ -135,6 +176,15 @@ const PayDrives = () => {
               </div>
             </div>
           </div>
+          {/* <NotificationModal
+            show={showFilterModal}
+            handleClose={() => setShowFilterModal(false)}
+            onApplyFilters={({ startDate, endDate, keyword }) => {
+              fetchDrivers(startDate, endDate);
+              setSearchTerm(keyword || ""); // 🔑 this drives the filter
+              setCurrentPage(1);
+            }}
+          /> */}
           <NotificationModal
             show={showFilterModal}
             handleClose={() => setShowFilterModal(false)}

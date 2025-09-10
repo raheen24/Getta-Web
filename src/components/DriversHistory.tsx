@@ -14,6 +14,7 @@ import { apiHelper } from "../services/index";
 import { useTranslation } from "react-i18next";
 
 interface DriverHistory {
+  _id: string;
   userName: string;
   userImage?: string;
   pickupLocation: string;
@@ -264,6 +265,7 @@ const DriverHistory = () => {
                   onApplyFilters={({ startDate, endDate, keyword }) => {
                     fetchDriverHistory(startDate, endDate);
                     setSearchTerm(keyword || "");
+                    setCurrentPage(1);
                   }}
                 />
               </div>
