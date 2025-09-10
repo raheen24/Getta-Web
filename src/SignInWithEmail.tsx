@@ -21,6 +21,68 @@ const SignInWithEmail: React.FC = () => {
   const navigate = useNavigate();
   const { fcmToken } = useSelector((state: any) => state.user);
 
+  // const handleSigin = async () => {
+  //   if (!email.trim()) {
+  //     toast.error(t("validation.enterEmail"));
+  //     return;
+  //   }
+
+  //   const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+  //   if (!emailPattern.test(email)) {
+  //     toast.error(t("validation.invalidEmail"));
+  //     return;
+  //   }
+  //   setLoading(true);
+
+  //   const requestBody = {
+  //     email,
+  //     userDeviceToken: fcmToken,
+  //     userDeviceType: "ios",
+  //     role: "vendor",
+  //     authProvider: "email",
+  //   };
+
+  //   try {
+  //     const { response, error } = await apiHelper(
+  //       "POST",
+  //       "/auth/sign-in",
+  //       {},
+  //       requestBody
+  //     );
+
+  //     console.log("API Response:", response);
+  //     console.log("API Error:", error);
+
+  //     if (response?.data?.status === 1 && response?.data?.data?.userId) {
+  //       const userData = {
+  //         userId: response.data.data.userId,
+  //         email: response.data.data.email,
+  //       };
+  //       const fcmToken = await requestFirebaseNotificationPermission();
+  //       if (fcmToken) {
+  //         dispatch(setFcmToken(fcmToken));
+  //       }
+
+  //       dispatch(setUser(userData));
+  //       toast.success(t("auth.otpSent"));
+
+  //       setTimeout(() => {
+  //         navigate("/verification-screen");
+  //       }, 1500);
+  //     } else {
+  //       const message =
+  //         response?.data?.message ||
+  //         error?.response?.data?.message ||
+  //         t("auth.signInFailed");
+  //       toast.error(message);
+  //     }
+  //   } catch (err: any) {
+  //     toast.error(t("messages.somethingWentWrong"));
+  //     console.error("Catch Error:", err);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const handleSigin = async () => {
     if (!email.trim()) {
       toast.error(t("validation.enterEmail"));
@@ -70,11 +132,15 @@ const SignInWithEmail: React.FC = () => {
           navigate("/verification-screen");
         }, 1500);
       } else {
-        const message =
-          response?.data?.message ||
-          error?.response?.data?.message ||
-          t("auth.signInFailed");
-        toast.error(message);
+        // 👇 yahan deleted account ka custom check lagayen
+        const apiMessage =
+          response?.data?.message || error?.response?.data?.message || "";
+
+        if (apiMessage.toLowerCase().includes("deleted")) {
+          toast.error("This account is deleted already");
+        } else {
+          toast.error(apiMessage || t("auth.signInFailed"));
+        }
       }
     } catch (err: any) {
       toast.error(t("messages.somethingWentWrong"));
