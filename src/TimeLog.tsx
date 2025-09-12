@@ -127,11 +127,11 @@ const TimeLog = () => {
             />
             <FaSearch />
           </div>
-          <div className="search-filter">
+          {/* <div className="search-filter">
             <a onClick={() => setShowFilterModal(true)}>
               <img src={FillterIcon} alt="filter" />
             </a>
-          </div>
+          </div> */}
         </div>
 
         <NotificationModal
