@@ -167,6 +167,29 @@ const Sidebar: React.FC<SidebarProps> = ({ isSidebarOpen, toggleSidebar }) => {
 
         <li className="list">
           <NavLink
+            to="/limits"
+            className={({ isActive }) =>
+              `text-decoration-none ${isActive ? "active" : ""}`
+            }
+          >
+            <span className="icons">
+              <img
+                src={restaurantIcon}
+                className="default_icons"
+                alt="Limits"
+              />
+              <img
+                src={restaurantIconActive}
+                className="active_icons"
+                alt="Limits Active"
+              />
+            </span>
+            {isSidebarOpen && <span className="link-text">{t('limits.limits')}</span>}
+          </NavLink>
+        </li>
+
+        <li className="list">
+          <NavLink
             to="/pay-drivers"
             className={({ isActive }) =>
               `text-decoration-none ${isActive ? "active" : ""}`

@@ -16,6 +16,8 @@ import { useNavigate } from "react-router-dom";
 import GlobalBtn from "./components/GlobalBtn";
 import { setUser } from "./redux/slice/userSlice";
 
+const PROFILE_CACHE_KEY = "cached_profile_data";
+
 const EditProfile: React.FC = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
@@ -26,6 +28,8 @@ const EditProfile: React.FC = () => {
   const [previewImage, setPreviewImage] = useState<string | null>(null);
   const [selectedFiles, setSelectedFiles] = useState<File[]>([]);
   const [existingFiles, setExistingFiles] = useState<string[]>([]);
+  const [removedFiles, setRemovedFiles] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
 
   const [businessName, setBusinessName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
@@ -39,9 +43,10 @@ const EditProfile: React.FC = () => {
   // };
 
   const getFullImageUrl = (path?: string) => {
-    return path
-      ? `https://client1.appsstaging.com:3017/${path.replace(/\\/g, "/")}`
-      : "/default-profile.png";
+    if (!path) return "/default-profile.png";
+    if (path.startsWith("http")) return path;
+    const cleanPath = path.replace(/\\/g, "/").replace(/^\/+/, "");
+    return `https://client1.appsstaging.com:3017/${cleanPath}`;
   };
 
   useEffect(() => {
@@ -50,6 +55,25 @@ const EditProfile: React.FC = () => {
         toast.error("Authentication error! Please login again.");
         return;
       }
+
+      const cached = localStorage.getItem(PROFILE_CACHE_KEY);
+      if (cached) {
+        try {
+          const data = JSON.parse(cached);
+          setBusinessName(data.businessName || "");
+          setPhoneNumber(data.phoneNumber || "");
+          setBusinessLicense(data.businessLicense || "");
+          setTaxIdentificationNumber(data.taxIdentificationNumber || "");
+          if (data.image) {
+            setPreviewImage(getFullImageUrl(data.image));
+          }
+          if (data.taxIdentificationNumberFiles?.length > 0) {
+            setExistingFiles(data.taxIdentificationNumberFiles);
+          }
+        } catch {}
+      }
+
+      setLoading(true);
       try {
         const headers = { Authorization: `Bearer ${token}` };
         const { response, error } = await apiHelper(
@@ -66,17 +90,18 @@ const EditProfile: React.FC = () => {
           if (data.image) {
             setPreviewImage(getFullImageUrl(data.image));
           }
-
-          // Set existing documents if available
           if (data.taxIdentificationNumberFiles?.length > 0) {
-            setExistingFiles(data.taxIdentificationNumberFiles); 
+            setExistingFiles(data.taxIdentificationNumberFiles);
           }
+          localStorage.setItem(PROFILE_CACHE_KEY, JSON.stringify(data));
         } else {
           toast.error(error || "Failed to fetch profile data");
         }
       } catch (err) {
         console.error(err);
         toast.error("Something went wrong while fetching profile");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -101,7 +126,10 @@ const EditProfile: React.FC = () => {
   };
 
   const handleRemoveExistingFile = (index: number) => {
-    // Handle removal of existing file from the UI
+    const fileToRemove = existingFiles[index];
+    if (fileToRemove) {
+      setRemovedFiles((prev) => [...prev, fileToRemove]);
+    }
     setExistingFiles((prev) => prev.filter((_, i) => i !== index));
   };
 
@@ -138,6 +166,16 @@ const EditProfile: React.FC = () => {
       formData.append("taxIdentificationNumberFiles", file);
     });
 
+    // Send removed files info if any
+    removedFiles.forEach((fileUrl) => {
+      formData.append("removedTaxIdentificationNumberFiles", fileUrl);
+    });
+
+    // Also try sending as JSON for backup
+    if (removedFiles.length > 0) {
+      formData.append("removedFiles", JSON.stringify(removedFiles));
+    }
+
     try {
       const headers = {
         "Content-Type": "multipart/form-data",
@@ -153,6 +191,8 @@ const EditProfile: React.FC = () => {
       if (response) {
         toast.success("Profile updated successfully!");
         dispatch(setUser(response.data.data)); // Update the Redux store with new user data
+        setRemovedFiles([]);
+        setSelectedFiles([]);
         setTimeout(() => navigate("/profile"), 1500); // Redirect to profile page
       } else {
         toast.error(error || "Profile update failed");

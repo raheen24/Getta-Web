@@ -470,7 +470,14 @@
     "spendingLimit": "Spending Limit",
     "cancellation": "Cancellation",
     "citiesLimits": "Cities limits",
-    "timeLimit": "Time limit"
+    "timeLimit": "Time limit",
+    "number": "Number",
+    "enterCancellation": "Enter cancellation limit",
+    "enterCitiesLimit": "Enter cities limit",
+    "enterTimeLimit": "Enter time limit",
+    "enterNumber": "Enter number",
+    "savedSuccessfully": "Limits saved successfully!",
+    "saveFailed": "Failed to save limits."
   },
   "notifications": {
     "notifications": "Notifications",

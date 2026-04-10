@@ -15,6 +15,7 @@ const ProfilePage: React.FC = () => {
     setSidebarOpen(!isSidebarOpen);
   };
 
+
   useEffect(() => {
     const handleResize = () => {
       if (window.innerWidth <= 1200) {
@@ -23,10 +24,13 @@ const ProfilePage: React.FC = () => {
         setSidebarOpen(true);
       }
     };
+
     window.addEventListener("resize", handleResize);
     handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
+ 
 
   const [searchParams] = useSearchParams();
   const driverId = searchParams.get("id");

@@ -25,11 +25,33 @@ const Charges = () => {
     handleResize();
     return () => window.removeEventListener("resize", handleResize);
   }, []);
+
   const dispatch = useDispatch();
 
   const [perMile, setPerMile] = useState("");
   const [perMinute, setPerMinute] = useState("");
   const [service, setService] = useState("");
+
+  useEffect(() => {
+    const savedCharges = localStorage.getItem("charges");
+    console.log("Loaded charges from storage:", savedCharges);
+    if (savedCharges) {
+      const data = JSON.parse(savedCharges);
+      setPerMile(data.perMile || data.perMile === 0 ? String(data.perMile) : "");
+      setPerMinute(data.perMinute || data.perMinute === 0 ? String(data.perMinute) : "");
+      setService(data.service || data.service === 0 ? String(data.service) : "");
+    } else {
+      const userData = localStorage.getItem("user");
+      if (userData) {
+        const parsed = JSON.parse(userData);
+        if (parsed.charges) {
+          setPerMile(parsed.charges.perMile?.toString() || "");
+          setPerMinute(parsed.charges.perMinute?.toString() || "");
+          setService(parsed.charges.service?.toString() || "");
+        }
+      }
+    }
+  }, []);
 
   const handleNumericChange = (
     setter: React.Dispatch<React.SetStateAction<string>>,
@@ -61,12 +83,18 @@ const Charges = () => {
         requestBody
       ); 
 
-      if (response?.data?.status === 1) {
+      console.log("Charges response:", response);
+
+      if (response?.data?.status === 1 || response?.status === 200) {
         toast.success(t("charges.savedSuccessfully"));
 
-        if (response.data?.data) {
-          dispatch(setUser(response.data.data));
-        }
+        const responseData = response.data?.data || response.data || requestBody;
+        const chargesData = responseData.charges || responseData;
+        localStorage.setItem("charges", JSON.stringify(chargesData));
+        console.log("Saved to storage:", chargesData);
+        setPerMile(chargesData.perMile?.toString() || "");
+        setPerMinute(chargesData.perMinute?.toString() || "");
+        setService(chargesData.service?.toString() || "");
       } else {
         toast.error(response?.data?.message || t("charges.saveFailed"));
       }

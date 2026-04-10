@@ -163,7 +163,7 @@ const SettingsPage = () => {
                   </button>
                 </li>
 
-                {/* <li>
+                <li>
                   <button className="nav-link">
                     <div className="form-check form-switch">
                       <label className="form-check-label" htmlFor="authSwitch">
@@ -178,7 +178,7 @@ const SettingsPage = () => {
                       />
                     </div>
                   </button>
-                </li> */}
+                </li>
 
                 <li className="nav-item" role="presentation">
                   <NavLink to="/language" className="nav-link">
